@@ -1,0 +1,33 @@
+version: '3.7'
+
+x-args: &ARGS
+  STAGE: ${STAGE}
+
+x-build-option: &BUILD_OPTION
+  context: .
+  cache_from:
+    - wechicken-server:latest
+  dockerfile: ./server.Dockerfile
+
+services:
+  database:
+    image: wechicken-mysql:latest
+    build:
+      context: .
+      cache_from:
+        - wechicken-mysql:latest
+      dockerfile: ./database.Dockerfile
+    ports:
+      - '3307:3306'
+  local:
+    image: wechicken-server:latest
+    build:
+      <<: *BUILD_OPTION
+      args: *ARGS
+    ports:
+      - '8090:3000'
+    depends_on:
+      - database
+    command: ['./wait-for-it.sh', 'database:3306', '--', 'npm', 'run', 'start:prod']
+    links:
+      - database
