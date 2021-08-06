@@ -122,6 +122,10 @@ $ npm run dev
 명령어를 실행시키면 서버가 켜지고,
 개발 단계에서 코드가 수정되면 자동으로 hot reloading 됨
 
+- Database 는 docker 로 로컬 환경에서 돌아가게 된다. 
+  - `npm run start:docker` 를 하게 되면 서버 + 데이터베이스 도커가 한번에 올라가게 된다. 
+  - `npm run start:db` 를 하게 되면 데이터베이스만 올라가게 된다. 
+
 ## 7. Tests
 
 ```

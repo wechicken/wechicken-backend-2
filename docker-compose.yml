@@ -1,12 +1,13 @@
 version: '3.7'
 
 x-args: &ARGS
+  ECR_DOMAIN: ${ECR_DOMAIN}
   STAGE: ${STAGE}
 
 x-build-option: &BUILD_OPTION
   context: .
   cache_from:
-    - wechicken-server:latest
+    - ${ECR_DOMAIN}/wechicken
   dockerfile: ./server.Dockerfile
 
 services:
@@ -20,7 +21,7 @@ services:
     ports:
       - '3307:3306'
   local:
-    image: wechicken-server:latest
+    image: ${ECR_DOMAIN}/wechicken:latest
     build:
       <<: *BUILD_OPTION
       args: *ARGS
@@ -31,3 +32,8 @@ services:
     command: ['./wait-for-it.sh', 'database:3306', '--', 'npm', 'run', 'start:prod']
     links:
       - database
+  development:
+    image: ${ECR_DOMAIN}/wechicken:development
+    build:
+      <<: *BUILD_OPTION
+      args: *ARGS
