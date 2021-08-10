@@ -11,6 +11,8 @@ export class BlogType {
   @Column({ type: 'varchar', unique: true })
   name: BlogTypeName;
 
-  @OneToMany(() => User, (user) => user.blogType)
+  @OneToMany(() => User, (user) => user.blogType, {
+    createForeignKeyConstraints: false,
+  })
   users: User[];
 }

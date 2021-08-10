@@ -8,10 +8,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { LikesModule } from './likes/likes.module';
 import { TagsModule } from './tags/tags.module';
+import { AuthMoudle } from './auth/auth.module';
 
 @Module({
   imports: [
     UsersModule,
+    AuthMoudle,
     BlogsModule,
     BatchesModule,
     BookmarksModule,
