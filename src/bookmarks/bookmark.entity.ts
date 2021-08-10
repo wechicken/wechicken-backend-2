@@ -13,11 +13,15 @@ export class Bookmark {
   @Column({ type: 'boolean' })
   status: boolean;
 
-  @ManyToOne(() => User, (user) => user.bookmarks)
+  @ManyToOne(() => User, (user) => user.bookmarks, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Blog, (blog) => blog.bookmarks)
+  @ManyToOne(() => Blog, (blog) => blog.bookmarks, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn({ name: 'blog_id' })
   blog: Blog;
 }

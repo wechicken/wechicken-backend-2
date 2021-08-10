@@ -13,11 +13,15 @@ export class Like {
   @Column({ type: 'boolean' })
   status: boolean;
 
-  @ManyToOne(() => User, (user) => user.likes)
+  @ManyToOne(() => User, (user) => user.likes, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Blog, (blog) => blog.likes)
+  @ManyToOne(() => Blog, (blog) => blog.likes, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn({ name: 'blog_id' })
   blog: Blog;
 }
