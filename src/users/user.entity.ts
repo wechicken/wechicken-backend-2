@@ -55,6 +55,9 @@ export class User {
   @JoinColumn({ name: 'batch_id' })
   batch: Batch;
 
+  @Column()
+  batch_id: number;
+
   @ManyToOne(() => BlogType, (blogType) => blogType.users)
   @JoinColumn({ name: 'blog_type_id' })
   blogType: BlogType;

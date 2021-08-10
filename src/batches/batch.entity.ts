@@ -44,6 +44,9 @@ export class Batch {
   @JoinColumn({ name: 'batch_type_id' })
   batchType: BatchType;
 
+  @Column()
+  batch_type_id: number;
+
   @OneToMany(() => User, (user) => user.batch)
   users: User[];
 
