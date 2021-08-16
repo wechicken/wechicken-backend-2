@@ -18,10 +18,6 @@ echo "[[DEPLOY SYSTEM]] Starting Deployment"
 docker-compose build $STAGE
 docker-compose push $STAGE
 
-# if [[ $STAGE == 'development' ]]; then
-#     fargate service deploy $PACKAGE_NAME-dev --cluster $CLUSTER_NAME --region ap-northeast-2 --image $ECR_DOMAIN/$PACKAGE_NAME:$STAGE
-# elif [[ $STAGE == 'production' ]]; then
-#     fargate service deploy $PACAKGE_NAME-prd --cluster $CLUSTER_NAME --region ap-northeast-2 --image $ECR_DOMAIN/$PACKAGE_NAME:$STAGE
-# fi
+aws ecs update-service --cluster $CLUSTER_NAME --service "wechicken-$STAGE" --force-new-deployment &
 
 echo "[[DEPLOY SYSTEM]] End Deployment"

@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY _script/wait-for-it.sh .
 COPY dist .
+COPY package-lock.json .
 COPY package.json .
 
 RUN chmod +x wait-for-it.sh
@@ -13,6 +14,6 @@ ARG STAGE
 
 ENV STAGE $STAGE
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD [ "npm", "run", "start:prod" ]
