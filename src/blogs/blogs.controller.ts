@@ -10,10 +10,12 @@ import {
   Put,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ValidUser } from 'src/auth/decorator/ValidUser';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { BookmarksService } from 'src/bookmarks/bookmarks.service';
+import { CamelCaseInterceptor } from 'src/interceptors/CamelCaseInterceptor';
 import { LikesService } from 'src/likes/likes.service';
 import { User } from 'src/users/user.entity';
 import { BlogsService } from './blogs.service';
@@ -21,6 +23,7 @@ import { BlogSearchInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
 
+@UseInterceptors(CamelCaseInterceptor)
 @Controller('blogs')
 export class BlogsController {
   constructor(
