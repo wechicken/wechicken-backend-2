@@ -1,0 +1,48 @@
+service:
+  name: wechicken
+
+app: wechicken
+
+plugins:
+  - serverless-offline
+  # - serverless-plugin-optimize
+  - serverless-plugin-warmup
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  stage: ${env:STAGE}
+  profile: wechicken
+  region: ap-northeast-2
+  apiName: wechicken-api
+  timeout: 300
+  iam:
+    role: arn:aws:iam::193634490577:role/LambdaAPIRole
+  vpc:
+    securityGroupIds:
+      - sg-04614be6f330572c2
+    subnetIds:
+      - subnet-0d11a1e045427c5ff
+      - subnet-04c1c8412c1c88590
+  package:
+  pattern:
+    - dist/**
+    - node_modules/**
+
+functions:
+  api:
+    handler: dist/lambda.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+
+custom:
+  serverless-offline:
+    httpPort: 8090
+    noPrependStageInUrl: true
+  # optimize:
+  #   external: ['swagger-ui-dist']
+  warmup:
+    - production

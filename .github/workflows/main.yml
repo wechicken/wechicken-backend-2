@@ -31,6 +31,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build Test Node:${{ matrix.node-version }}
         uses: actions/setup-node@v1
+        env:
+          STAGE: ${{ secrets.NODE_ENV }}
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm run test:CI
