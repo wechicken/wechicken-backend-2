@@ -2,6 +2,10 @@
 /dist
 /node_modules
 
+# serverless
+.serverless
+.serverless/**
+
 # Logs
 logs
 *.log
