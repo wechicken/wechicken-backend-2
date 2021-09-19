@@ -51,6 +51,8 @@ export class CamelCaseInterceptor<T>
     const transformDataToCamelCase = (data: any) => {
       if (isArray(data)) return data.map(deepObjectKeysToCalmelCase);
       if (isObject(data)) return deepObjectKeysToCalmelCase(data);
+
+      return data;
     };
 
     return next

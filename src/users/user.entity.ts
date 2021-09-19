@@ -38,7 +38,7 @@ export class User {
   thumbnail: string;
 
   @Column({ type: 'boolean', default: false })
-  is_admin: boolean;
+  is_manager: boolean;
 
   @Column({ type: 'boolean', default: false })
   is_group_joined: boolean;
