@@ -55,5 +55,5 @@ export class Batch {
   users: User[];
 
   @Column({ nullable: true, comment: '치킨계장 user.id' })
-  manger_id: number;
+  manager_id: number;
 }
