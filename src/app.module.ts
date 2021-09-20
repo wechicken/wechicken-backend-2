@@ -9,10 +9,12 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { LikesModule } from './likes/likes.module';
 import { TagsModule } from './tags/tags.module';
 import { getConnectionOptions } from 'typeorm';
+import { AuthMoudle } from './auth/auth.module';
 
 @Module({
   imports: [
     UsersModule,
+    AuthMoudle,
     BlogsModule,
     BatchesModule,
     BookmarksModule,
