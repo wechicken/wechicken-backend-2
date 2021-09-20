@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { LikesModule } from './likes/likes.module';
 import { TagsModule } from './tags/tags.module';
+import { getConnectionOptions } from 'typeorm';
 
 @Module({
   imports: [
@@ -17,7 +18,9 @@ import { TagsModule } from './tags/tags.module';
     BookmarksModule,
     LikesModule,
     TagsModule,
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => Object.assign(await getConnectionOptions()),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

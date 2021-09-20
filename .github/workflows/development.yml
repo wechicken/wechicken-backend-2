@@ -2,10 +2,11 @@ name: wechicken-development
 
 on:
   push:
-    branches: [development]
+    branches: [ development ]
 
 jobs:
   build:
+    environment: dev-envs
     runs-on: ubuntu-latest
 
     strategy:
@@ -17,24 +18,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+      - name: Add profile credentials to ~/.aws/credentials 
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile wechicken
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile wechicken
+          aws configure set region ${{ secrets.AWS_REGION }} --profile wechicken
 
       - name: Serverless Node:${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Ci Test
-        env:
-          STAGE: ${{ secrets.NODE_ENV }}
+      - name: direnv
+        uses: HatsuneMiku3939/direnv-action@v1
+
+      - name: CI Test
         run: npm run test:CI
 
       - name: DEPLOY
         env:
           NODE_ENV: ${{ secrets.NODE_ENV }}
+          STAGE: ${{ secrets.STAGE }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
         run: npm run deploy

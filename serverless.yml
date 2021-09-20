@@ -1,5 +1,4 @@
-service:
-  name: wechicken
+service: wechicken
 
 app: wechicken
 
@@ -9,26 +8,26 @@ plugins:
   - serverless-plugin-warmup
 
 provider:
+  lambdaHashingVersion: '20201221'
   name: aws
   runtime: nodejs12.x
   memorySize: 256
   stage: ${env:STAGE}
-  profile: wechicken
   region: ap-northeast-2
   apiName: wechicken-api
   timeout: 300
+  environment: ${file(./env.js)}
   iam:
     role: arn:aws:iam::193634490577:role/LambdaAPIRole
   vpc:
     securityGroupIds:
       - sg-04614be6f330572c2
+      - sg-07caaa2457111114d
     subnetIds:
       - subnet-0d11a1e045427c5ff
       - subnet-04c1c8412c1c88590
-  package:
-  pattern:
-    - dist/**
-    - node_modules/**
+      - subnet-04ae0ca30473b3882
+      - subnet-0982f62bc41ea309d
 
 functions:
   api:
@@ -37,6 +36,11 @@ functions:
       - http:
           path: /{proxy+}
           method: ANY
+
+package:
+  patterns:
+    - dist/**
+    - node_modules/**
 
 custom:
   serverless-offline:
