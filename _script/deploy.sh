@@ -2,7 +2,7 @@
 set -e
 
 export AWS_PROFILE=wechicken
-export STAGE="development"
+# export STAGE="development"
 
 # Main deployment
 echo "[[DEPLOY SYSTEM]] Starting Deployment"

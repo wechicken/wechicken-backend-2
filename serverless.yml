@@ -17,14 +17,18 @@ provider:
   region: ap-northeast-2
   apiName: wechicken-api
   timeout: 300
+  environment: ${file(./env.js)}
   iam:
     role: arn:aws:iam::193634490577:role/LambdaAPIRole
   vpc:
     securityGroupIds:
       - sg-04614be6f330572c2
+      - sg-07caaa2457111114d
     subnetIds:
       - subnet-0d11a1e045427c5ff
       - subnet-04c1c8412c1c88590
+      - subnet-04ae0ca30473b3882
+      - subnet-0982f62bc41ea309d
   package:
   pattern:
     - dist/**
