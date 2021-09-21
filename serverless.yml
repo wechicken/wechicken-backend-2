@@ -28,13 +28,6 @@ provider:
       - subnet-04c1c8412c1c88590
       - subnet-04ae0ca30473b3882
       - subnet-0982f62bc41ea309d
-<<<<<<< HEAD
-  package:
-  pattern:
-    - dist/**
-    - node_modules/**
-=======
->>>>>>> 541197795e08124359f8335e063df45a37dd8363
 
 functions:
   api:
