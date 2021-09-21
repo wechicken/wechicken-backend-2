@@ -2,11 +2,10 @@
 set -e
 
 export AWS_PROFILE=wechicken
-# export STAGE="development"
 
 # Main deployment
 echo "[[DEPLOY SYSTEM]] Starting Deployment"
 
-npx sls deploy
+sls deploy
 
 echo "[[DEPLOY SYSTEM]] End Deployment"
