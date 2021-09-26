@@ -1,8 +1,5 @@
 #/usr/bin bash
 
-export STAGE="local"
+docker build -t wechicken-database .
 
-docker-compose --log-level ERROR build "database"
-docker-compose run --service-ports -d "database"
-
-sleep 5s
+docker run -d -p 3307:3306 --name=wechicken-database wechicken-database:latest
