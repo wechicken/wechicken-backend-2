@@ -14,7 +14,7 @@ import { UsersService } from 'src/users/users.service';
     }),
     forwardRef(() => UsersModule),
   ],
-  providers: [AuthService, JwtStrategy, UsersService],
+  providers: [AuthService, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthMoudle {}
