@@ -37,9 +37,7 @@ export class CamelCaseInterceptor<T>
     next: CallHandler,
   ): Observable<Response<T>> {
     const keyToCamelcase = ([k, v]: [string, any]): [string, any] => {
-      return isObject(v)
-        ? [toCamelCase(k), deepObjectKeysToCalmelCase(v)]
-        : [toCamelCase(k), v];
+      return [toCamelCase(k), transformDataToCamelCase(v)];
     };
 
     const deepObjectKeysToCalmelCase = (
