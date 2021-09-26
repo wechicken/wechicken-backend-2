@@ -14,4 +14,4 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
-bootstrap();
+process.env.STAGE === 'nest' && void bootstrap();
