@@ -9,19 +9,69 @@ export class BatchRepository extends Repository<Batch> {
     return this.save(batch);
   }
 
-  getUsersBlogCount(batch_id: number): Promise<Batch[]> {
+  getTopThreeUsersByBlogCount(batch_id: number): Promise<Batch[]> {
     const FIRST_TO_THIRD = 3;
 
     return this.createQueryBuilder('batch')
-      .select(['batch.nth', 'batch.title', 'user.gmail_id', 'user.name'])
-      .addSelect('COUNT(blog.id)', 'blogsCount')
+      .select(['user.id', 'user.name', 'user.thumbnail'])
+      .addSelect('COUNT(blog.id)', 'blogs_count')
       .innerJoin('batch.users', 'user', 'user.batch_id = :batch_id', {
         batch_id,
       })
-      .leftJoin('user.blogs', 'blog')
+      .innerJoin('user.blogs', 'blog')
       .groupBy('user.id')
-      .orderBy('blogsCount', 'DESC')
+      .orderBy('blogs_count', 'DESC')
       .limit(FIRST_TO_THIRD)
+      .getRawMany();
+  }
+
+  getBlogCountsByUserId(
+    batch_id: number,
+    from: string,
+    to: string,
+  ): Promise<Batch[]> {
+    return this.createQueryBuilder('batch')
+      .select(['user.id'])
+      .addSelect('COUNT(blog.id)', 'blogs_count')
+      .innerJoin('batch.users', 'user', 'user.batch_id = :batch_id', {
+        batch_id,
+      })
+      .innerJoin('user.blogs', 'blog')
+      .where('blog.written_date BETWEEN :from AND :to', { from, to })
+      .groupBy('user.id')
+      .getRawMany();
+  }
+
+  getUsersOfBatch(batch_id: number): Promise<Batch[]> {
+    return this.createQueryBuilder('batch')
+      .select([
+        'batch.penalty',
+        'batch.count_per_week',
+        'user.id',
+        'user.thumbnail',
+        'user.name',
+      ])
+      .innerJoin('batch.users', 'user', 'user.batch_id = :batch_id', {
+        batch_id,
+      })
+      .getRawMany();
+  }
+
+  getBlogsOfWeek(batch_id: number, from: string, to: string): Promise<Batch[]> {
+    return this.createQueryBuilder('batch')
+      .select([
+        'batch.id',
+        'user.id',
+        'user.name',
+        'blog.title',
+        'blog.link',
+        'blog.written_date',
+      ])
+      .innerJoin('batch.users', 'user', 'user.batch_id = :batch_id', {
+        batch_id,
+      })
+      .innerJoin('user.blogs', 'blog')
+      .where('blog.written_date BETWEEN :from AND :to', { from, to })
       .getRawMany();
   }
 }
