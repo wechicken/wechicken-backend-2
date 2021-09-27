@@ -31,7 +31,7 @@ provider:
 
 functions:
   api:
-    handler: dist/lambda.handler
+    handler: out/lambda.handler
     events:
       - http:
           path: /{proxy+}
@@ -39,8 +39,16 @@ functions:
 
 package:
   patterns:
-    - dist/**
-    - node_modules/**
+    - out/lambda.js
+    - '!node_modules/**'
+    - '!_script'
+    - '!dist'
+    - '!src'
+    - '!test'
+    - '!*.json'
+    - '!*.js'
+    - '!*.md'
+    - '!Dockerfile'
 
 custom:
   serverless-offline:

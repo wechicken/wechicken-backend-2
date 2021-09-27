@@ -6,12 +6,13 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "nest build",
+    "prebuild": "rimraf dist && rimraf out",
+    "build": "bash _script/esbuild.sh",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
+    "start": "STAGE=nest nest start",
+    "start:dev": "STAGE=nest nest start --watch",
+    "start:debug": "STAGE=nest nest start --debug --watch",
+    "start:local": "npm run build && npm run start:lambda",
     "start:lambda": "npm run stop:lambda && bash _script/start-lambda.sh",
     "stop:lambda": "bash _script/stop-lambda.sh",
     "start:db": "npm run stop:db && bash _script/db-start.sh",
@@ -48,6 +49,7 @@
     "typeorm": "^0.2.36"
   },
   "devDependencies": {
+    "esbuild": "^0.13.2",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
