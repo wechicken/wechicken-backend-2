@@ -27,6 +27,7 @@
     "deploy": "npm run build && bash _script/deploy.sh"
   },
   "dependencies": {
+    "@nestjs/axios": "^0.0.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^8.0.0",
@@ -36,12 +37,14 @@
     "@nestjs/typeorm": "^8.0.1",
     "@vendia/serverless-express": "^4.3.11",
     "aws-lambda": "^1.0.6",
+    "axios": "^0.21.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dayjs": "^1.10.7",
     "fxjs": "^0.21.3",
     "mysql2": "^2.2.5",
     "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
@@ -49,7 +52,6 @@
     "typeorm": "^0.2.36"
   },
   "devDependencies": {
-    "esbuild": "^0.13.2",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -62,6 +64,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "aws-sdk": "^2.990.0",
+    "esbuild": "^0.13.2",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
