@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Blog, BlogResponse } from './blog.entity';
 import { BlogRepository } from './blog.repository';
 import { BlogSearchInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
+import { go, object, entries, each, map, keys, join } from 'fxjs';
 
 @Injectable()
 export class BlogsService {
@@ -59,13 +60,29 @@ export class BlogsService {
       batchNth: (v: string) => Number(v),
     };
 
-    const query = Object.keys(options)
-      .map((option) => queryMapper[option])
-      .join(' AND ');
+    const throwErrorIfBadRequest = (v) => {
+      if (!v)
+        throw new HttpException(
+          '지원하지 않는 검색조건',
+          HttpStatus.BAD_REQUEST,
+        );
+      return v;
+    };
 
-    const queryParams = Object.entries(options)
-      .map(([k, v]) => [k, valueTransformMapper[k](v)])
-      .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+    const query = go(
+      options,
+      keys,
+      map((key) => queryMapper[key]),
+      each(throwErrorIfBadRequest),
+      join(' AND '),
+    );
+
+    const queryParams = go(
+      options,
+      entries,
+      map(([k, v]) => [k, valueTransformMapper[k](v)]),
+      object,
+    );
 
     return [query, queryParams];
   }

@@ -40,18 +40,14 @@ export class Batch {
   @Column({ type: 'datetime', nullable: true })
   deleted_at: Date;
 
-  @ManyToOne(() => BatchType, (batchType) => batchType.batches, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToOne(() => BatchType, (batchType) => batchType.batches)
   @JoinColumn({ name: 'batch_type_id' })
   batchType: BatchType;
 
   @Column()
   batch_type_id: number;
 
-  @OneToMany(() => User, (user) => user.batch, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => User, (user) => user.batch)
   users: User[];
 
   @Column({ nullable: true, comment: '치킨계장 user.id' })

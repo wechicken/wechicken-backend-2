@@ -11,8 +11,6 @@ export class BatchType {
   @Column({ type: 'varchar', unique: true })
   name: BatchTypeName;
 
-  @OneToMany(() => Batch, (batch) => batch.batchType, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => Batch, (batch) => batch.batchType)
   batches: Batch[];
 }

@@ -66,11 +66,13 @@ export class BatchRepository extends Repository<Batch> {
         'blog.title',
         'blog.link',
         'blog.written_date',
+        'blog_type.name',
       ])
       .innerJoin('batch.users', 'user', 'user.batch_id = :batch_id', {
         batch_id,
       })
       .innerJoin('user.blogs', 'blog')
+      .leftJoin('user.blogType', 'blog_type')
       .where('blog.written_date BETWEEN :from AND :to', { from, to })
       .getRawMany();
   }

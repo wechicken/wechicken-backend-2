@@ -29,14 +29,16 @@ export class BlogRepository extends Repository<Blog> {
         'blog',
         'user.id',
         'user.name',
+        'blog_type.name',
         'batch.nth',
-        'batchType.name',
+        'batch_type.name',
         'bookmark.status',
         'like.status',
       ])
       .innerJoin('blog.user', 'user')
       .innerJoin('user.batch', 'batch')
-      .innerJoin('batch.batchType', 'batchType')
+      .leftJoin('user.blogType', 'blog_type')
+      .innerJoin('batch.batchType', 'batch_type')
       .leftJoin('blog.bookmarks', 'bookmark', 'bookmark.user_id = :user_id', {
         user_id,
       })
