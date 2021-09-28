@@ -13,15 +13,11 @@ export class Tag {
   @Column()
   name: string;
 
-  @ManyToOne(() => User, (user) => user.tags, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToOne(() => User, (user) => user.tags)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Blog, (blog) => blog.tags, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToOne(() => Blog, (blog) => blog.tags)
   @JoinColumn({ name: 'blog_id' })
   blog: Blog;
 }

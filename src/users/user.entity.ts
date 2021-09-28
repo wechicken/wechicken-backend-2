@@ -52,24 +52,18 @@ export class User {
   @Column({ type: 'datetime', nullable: true })
   deleted_at: Date;
 
-  @ManyToOne(() => Batch, (batch) => batch.users, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToOne(() => Batch, (batch) => batch.users)
   @JoinColumn({ name: 'batch_id' })
   batch: Batch;
 
   @Column()
   batch_id: number;
 
-  @ManyToOne(() => BlogType, (blogType) => blogType.users, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToOne(() => BlogType, (blogType) => blogType.users)
   @JoinColumn({ name: 'blog_type_id' })
   blogType: BlogType;
 
-  @ManyToMany(() => User, (user) => user.following, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToMany(() => User, (user) => user.following)
   @JoinTable({
     name: 'follow',
     joinColumn: {
@@ -81,28 +75,18 @@ export class User {
   })
   followers: User[];
 
-  @ManyToMany(() => User, (user) => user.followers, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToMany(() => User, (user) => user.followers)
   following: User[];
 
-  @OneToMany(() => Bookmark, (bookmark) => bookmark.user, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
   bookmarks: Bookmark[];
 
-  @OneToMany(() => Like, (like) => like.user, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
 
-  @OneToMany(() => Tag, (tag) => tag.user, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => Tag, (tag) => tag.user)
   tags: Tag[];
 
-  @OneToMany(() => Blog, (blog) => blog.user, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => Blog, (blog) => blog.user)
   blogs: Blog[];
 }

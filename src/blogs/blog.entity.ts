@@ -42,24 +42,16 @@ export class Blog {
   @Column({ type: 'datetime', nullable: true })
   deleted_at: Date;
 
-  @OneToMany(() => Bookmark, (bookmark) => bookmark.blog, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.blog)
   bookmarks: Bookmark[];
 
-  @OneToMany(() => Like, (like) => like.blog, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => Like, (like) => like.blog)
   likes: Like[];
 
-  @OneToMany(() => Tag, (tag) => tag.blog, {
-    createForeignKeyConstraints: false,
-  })
+  @OneToMany(() => Tag, (tag) => tag.blog)
   tags: Tag[];
 
-  @ManyToOne(() => User, (user) => user.blogs, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToOne(() => User, (user) => user.blogs)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
