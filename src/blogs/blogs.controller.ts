@@ -22,9 +22,11 @@ import { BlogsService } from './blogs.service';
 import { BlogSearchInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseInterceptors(CamelCaseInterceptor)
 @Controller('blogs')
+@ApiTags('블로그 API')
 export class BlogsController {
   constructor(
     private readonly blogsService: BlogsService,

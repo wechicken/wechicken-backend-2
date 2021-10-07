@@ -15,10 +15,12 @@ import { CamelCaseInterceptor } from 'src/interceptors/CamelCaseInterceptor';
 import { User } from 'src/users/user.entity';
 import { BatchesService } from './batches.service';
 import { BatchSearchInput } from './dto/input/batch-search.input';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(CamelCaseInterceptor)
 @Controller('batches')
+@ApiTags('기수 API')
 export class BatchesController {
   constructor(private readonly batchesService: BatchesService) {}
 
