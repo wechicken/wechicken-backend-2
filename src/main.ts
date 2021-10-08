@@ -17,6 +17,10 @@ async function bootstrap() {
     .setTitle('WECHICKEN')
     .setDescription('The Wechicken API description')
     .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },
+      'authorization',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
