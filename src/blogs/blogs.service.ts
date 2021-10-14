@@ -28,8 +28,8 @@ export class BlogsService {
 
     return blogs.map(({ likes, bookmarks, ...blog }) => ({
       ...blog,
-      isLiked: !!likes.length && likes[0].status,
-      isBookmarked: !!bookmarks.length && bookmarks[0].status,
+      is_liked: !!likes.length && likes[0].status,
+      is_bookmarked: !!bookmarks.length && bookmarks[0].status,
     }));
   }
 
@@ -52,6 +52,7 @@ export class BlogsService {
       userName: 'user.name LIKE :userName',
       blogTitle: 'blog.title LIKE :blogTitle',
       batchNth: 'batch.nth = :batchNth',
+      deletedAt: 'blog.deleted_at is null',
     };
 
     const valueTransformMapper = {
@@ -70,7 +71,7 @@ export class BlogsService {
     };
 
     const query = go(
-      options,
+      { ...options, ...{ deletedAt: null } },
       keys,
       map((key) => queryMapper[key]),
       each(throwErrorIfBadRequest),

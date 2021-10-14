@@ -40,15 +40,15 @@ export class CamelCaseInterceptor<T>
       return [toCamelCase(k), transformDataToCamelCase(v)];
     };
 
-    const deepObjectKeysToCalmelCase = (
+    const deepObjectKeysToCamelCase = (
       data: Record<string, any>,
     ): Record<string, any> => {
       return Object.entries(data).map(keyToCamelcase).reduce(object, {});
     };
 
     const transformDataToCamelCase = (data: any) => {
-      if (isArray(data)) return data.map(deepObjectKeysToCalmelCase);
-      if (isObject(data)) return deepObjectKeysToCalmelCase(data);
+      if (isArray(data)) return data.map(deepObjectKeysToCamelCase);
+      if (isObject(data)) return deepObjectKeysToCamelCase(data);
 
       return data;
     };

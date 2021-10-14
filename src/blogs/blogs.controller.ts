@@ -22,11 +22,22 @@ import { BlogsService } from './blogs.service';
 import { BlogSearchInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  PostApiResponse,
+  GetBlogsResponse,
+} from './dto/response/blog.response';
 
 @UseInterceptors(CamelCaseInterceptor)
+@ApiTags('블로그 (게시글) API')
 @Controller('blogs')
-@ApiTags('블로그 API')
 export class BlogsController {
   constructor(
     private readonly blogsService: BlogsService,
@@ -35,12 +46,22 @@ export class BlogsController {
   ) {}
 
   @Get()
+  @ApiOperation({
+    summary: '게시글 목록 조회 API',
+    description: '로그인 없이 메인화면 게시글 목록 불러옴',
+  })
+  @ApiOkResponse({ type: GetBlogsResponse })
   async getBlogs(@Query() blogSearchInput: BlogSearchInput) {
     return this.blogsService.findBlogs(blogSearchInput, null);
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('authorization')
   @Get('/auth')
+  @ApiOperation({
+    summary: '게시글 목록 조회 API',
+    description: '로그인 후 메인화면 게시글 목록 불러옴',
+  })
   async getBlogsAuth(
     @ValidUser() { id: user_id }: User,
     @Query() blogSearchInput: BlogSearchInput,
@@ -49,7 +70,13 @@ export class BlogsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('authorization')
   @Post()
+  @ApiOperation({
+    summary: '게시글 추가 API',
+    description: '게시글을 추가함',
+  })
+  @ApiCreatedResponse({ type: PostApiResponse })
   async createBlog(
     @ValidUser() { id: user_id }: User,
     @Body() createBlogInput: CreateBlogInput,
@@ -70,7 +97,17 @@ export class BlogsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('authorization')
   @Put(':blog_id')
+  @ApiOperation({
+    summary: '게시글 수정 API',
+    description: '게시글을 수정함',
+  })
+  @ApiParam({
+    name: 'blog_id',
+    description: '게시글 ID',
+  })
+  @ApiOkResponse({ type: PostApiResponse })
   async updateBlog(
     @ValidUser() { id: user_id }: User,
     @Param('blog_id', ParseIntPipe) blog_id: number,
@@ -97,11 +134,21 @@ export class BlogsController {
       );
     }
 
-    return { mesage: 'SUCCESS' };
+    return { message: 'SUCCESS' };
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('authorization')
   @Post(':blog_id/bookmarks')
+  @ApiOperation({
+    summary: '게시글 북마크 추가/제거 API',
+    description: '게시글을 나의 북마크에 추가 또는 제거',
+  })
+  @ApiParam({
+    name: 'blog_id',
+    description: '게시글 ID',
+  })
+  @ApiCreatedResponse({ type: PostApiResponse })
   async createOrUpdateBookmark(
     @ValidUser() { id: user_id }: User,
     @Param('blog_id', ParseIntPipe) blog_id: number,
@@ -127,7 +174,17 @@ export class BlogsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('authorization')
   @Post(':blog_id/likes')
+  @ApiOperation({
+    summary: '게시글 좋아요 추가/제거 API',
+    description: '게시글에 좋아요를 추가 또는 제거',
+  })
+  @ApiParam({
+    name: 'blog_id',
+    description: '게시글 ID',
+  })
+  @ApiCreatedResponse({ type: PostApiResponse })
   async createOrUpdateLike(
     @ValidUser() { id: user_id }: User,
     @Param('blog_id', ParseIntPipe) blog_id: number,
