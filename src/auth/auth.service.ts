@@ -22,10 +22,8 @@ export class AuthService {
     const observableResponse = this.httpService.get(
       `https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`,
     );
-    console.log('');
     const response = await firstValueFrom(observableResponse);
 
-    console.log(response);
     return response.data;
   }
 

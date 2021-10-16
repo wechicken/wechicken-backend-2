@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -19,7 +20,10 @@ import { CamelCaseInterceptor } from 'src/interceptors/CamelCaseInterceptor';
 import { LikesService } from 'src/likes/likes.service';
 import { User } from 'src/users/user.entity';
 import { BlogsService } from './blogs.service';
-import { BlogSearchInput } from './dto/input/blog-search.input';
+import {
+  BlogSearchInput,
+  BlogPagingInput,
+} from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
 import {
@@ -67,6 +71,23 @@ export class BlogsController {
     @Query() blogSearchInput: BlogSearchInput,
   ) {
     return this.blogsService.findBlogs(blogSearchInput, user_id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('authorization')
+  @Get('/me')
+  @ApiOperation({
+    summary: '나의 게시글 목록 조회 API',
+    description: '마이페이지 게시글 목록 조회',
+  })
+  async getUserBlogs(
+    @ValidUser() { id: user_id }: User,
+    @Query() blogPagingInput: BlogPagingInput,
+  ) {
+    return this.blogsService.findBlogs(
+      { ...blogPagingInput, userId: user_id },
+      user_id,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -133,6 +154,36 @@ export class BlogsController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+
+    return { message: 'SUCCESS' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('authorization')
+  @Delete(':blog_id')
+  @ApiOperation({
+    summary: '게시글 삭제 API',
+    description: '게시글을 삭제함',
+  })
+  @ApiParam({
+    name: 'blog_id',
+    description: '게시글 ID',
+  })
+  @ApiOkResponse({ type: PostApiResponse })
+  async deleteBlog(
+    @ValidUser() { id: user_id }: User,
+    @Param('blog_id', ParseIntPipe) blog_id: number,
+  ) {
+    const foundBlog = await this.blogsService.findBlogById(blog_id);
+    if (!foundBlog) {
+      throw new HttpException('BLOG NOT FOUND', HttpStatus.NOT_FOUND);
+    }
+
+    if (foundBlog.user_id !== user_id) {
+      throw new HttpException('FORBIDDEN', HttpStatus.FORBIDDEN);
+    }
+
+    await this.blogsService.deleteBlog(blog_id);
 
     return { message: 'SUCCESS' };
   }

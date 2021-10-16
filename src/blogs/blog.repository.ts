@@ -3,6 +3,7 @@ import {
   InsertResult,
   Repository,
   UpdateResult,
+  DeleteResult,
 } from 'typeorm';
 import { Blog } from './blog.entity';
 import { CreateBlogInput } from './dto/input/create-blog.input';
@@ -81,6 +82,13 @@ export class BlogRepository extends Repository<Blog> {
     return this.createQueryBuilder()
       .update(Blog)
       .set({ title, subtitle, link, thumbnail, written_date })
+      .where('id = :blog_id', { blog_id })
+      .execute();
+  }
+
+  deleteBlog(blog_id: number): Promise<DeleteResult> {
+    return this.createQueryBuilder()
+      .delete()
       .where('id = :blog_id', { blog_id })
       .execute();
   }

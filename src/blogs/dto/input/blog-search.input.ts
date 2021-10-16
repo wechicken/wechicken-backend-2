@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class BlogSearchInput {
+export class BlogPagingInput {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
@@ -23,13 +23,9 @@ export class BlogSearchInput {
   @Max(50)
   @ApiProperty({ description: 'limit' })
   limit: number;
+}
 
-  @IsOptional()
-  @IsNumber()
-  @Type(() => Number)
-  @ApiProperty({ description: '기수', required: false })
-  batchNth?: number;
-
+export class BlogSearchInput extends BlogPagingInput {
   @IsOptional()
   @IsString()
   @ApiProperty({ description: '게시글 제목', required: false })
@@ -39,4 +35,14 @@ export class BlogSearchInput {
   @IsString()
   @ApiProperty({ description: '유저 이름', required: false })
   userName?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @ApiProperty({ description: '기수', required: false })
+  batchNth?: number;
+
+  @IsOptional()
+  @IsNumber()
+  userId?: number;
 }

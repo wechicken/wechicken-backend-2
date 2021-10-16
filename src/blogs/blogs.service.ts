@@ -45,6 +45,10 @@ export class BlogsService {
     return this.blogRepository.updateBlog(blog_id, updateBlogInput);
   }
 
+  async deleteBlog(blog_id: number) {
+    return this.blogRepository.deleteBlog(blog_id);
+  }
+
   private buildFindBlogsWhere<T>(
     options: T,
   ): [string, Record<string, number | string>] {
@@ -53,12 +57,14 @@ export class BlogsService {
       blogTitle: 'blog.title LIKE :blogTitle',
       batchNth: 'batch.nth = :batchNth',
       deletedAt: 'blog.deleted_at is null',
+      userId: 'user.id = :userId',
     };
 
     const valueTransformMapper = {
       userName: (v: string) => `${v}%`,
       blogTitle: (v: string) => `%${v}%`,
       batchNth: (v: string) => Number(v),
+      userId: (v: number) => Number(v),
     };
 
     const throwErrorIfBadRequest = (v) => {
