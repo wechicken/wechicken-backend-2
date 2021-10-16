@@ -45,6 +45,7 @@ export class BlogRepository extends Repository<Blog> {
       })
       .leftJoin('blog.likes', 'like', 'like.user_id = :user_id', { user_id })
       .where(query, queryParams)
+      .andWhere('blog.deleted_at IS NULL')
       .skip(offset)
       .take(limit)
       .orderBy('blog.written_date', 'DESC')

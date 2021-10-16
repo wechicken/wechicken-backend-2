@@ -4,7 +4,7 @@ import { BlogRepository } from './blog.repository';
 import { BlogSearchInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
-import { go, object, entries, each, map, keys, join } from 'fxjs';
+import { go, object, entries, each, map, keys, join, goS, stopIf } from 'fxjs';
 
 @Injectable()
 export class BlogsService {
@@ -56,7 +56,6 @@ export class BlogsService {
       userName: 'user.name LIKE :userName',
       blogTitle: 'blog.title LIKE :blogTitle',
       batchNth: 'batch.nth = :batchNth',
-      deletedAt: 'blog.deleted_at is null',
       userId: 'user.id = :userId',
     };
 
@@ -76,9 +75,10 @@ export class BlogsService {
       return v;
     };
 
-    const query = go(
-      { ...options, ...{ deletedAt: null } },
+    const query = goS(
+      options,
       keys,
+      stopIf((a) => !a.length, ''),
       map((key) => queryMapper[key]),
       each(throwErrorIfBadRequest),
       join(' AND '),
