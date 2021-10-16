@@ -4,7 +4,7 @@ import { BlogRepository } from './blog.repository';
 import { BlogSearchInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
-import { go, object, entries, each, map, keys, join } from 'fxjs';
+import { go, object, entries, each, map, keys, join, goS, stopIf } from 'fxjs';
 
 @Injectable()
 export class BlogsService {
@@ -28,8 +28,8 @@ export class BlogsService {
 
     return blogs.map(({ likes, bookmarks, ...blog }) => ({
       ...blog,
-      isLiked: !!likes.length && likes[0].status,
-      isBookmarked: !!bookmarks.length && bookmarks[0].status,
+      is_liked: !!likes.length && likes[0].status,
+      is_bookmarked: !!bookmarks.length && bookmarks[0].status,
     }));
   }
 
@@ -45,6 +45,10 @@ export class BlogsService {
     return this.blogRepository.updateBlog(blog_id, updateBlogInput);
   }
 
+  async deleteBlog(blog_id: number) {
+    return this.blogRepository.deleteBlog(blog_id);
+  }
+
   private buildFindBlogsWhere<T>(
     options: T,
   ): [string, Record<string, number | string>] {
@@ -52,12 +56,14 @@ export class BlogsService {
       userName: 'user.name LIKE :userName',
       blogTitle: 'blog.title LIKE :blogTitle',
       batchNth: 'batch.nth = :batchNth',
+      userId: 'user.id = :userId',
     };
 
     const valueTransformMapper = {
       userName: (v: string) => `${v}%`,
       blogTitle: (v: string) => `%${v}%`,
       batchNth: (v: string) => Number(v),
+      userId: (v: number) => Number(v),
     };
 
     const throwErrorIfBadRequest = (v) => {
@@ -69,9 +75,10 @@ export class BlogsService {
       return v;
     };
 
-    const query = go(
+    const query = goS(
       options,
       keys,
+      stopIf((a) => !a.length, ''),
       map((key) => queryMapper[key]),
       each(throwErrorIfBadRequest),
       join(' AND '),

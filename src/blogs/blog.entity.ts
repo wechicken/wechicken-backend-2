@@ -60,7 +60,7 @@ export class Blog {
 }
 
 export interface BlogResponse extends Omit<Blog, 'bookmarks' | 'likes'> {
-  isLiked: boolean;
+  is_liked: boolean;
 
-  isBookmarked: boolean;
+  is_bookmarked: boolean;
 }

@@ -8,12 +8,12 @@ import { UserRepository } from './user.repository';
 @Injectable()
 export class UsersService {
   constructor(
-    private userRepositry: UserRepository,
+    private userRepository: UserRepository,
     private batchesService: BatchesService,
   ) {}
 
-  findUserByUnique(data: UserUniqueSearchParams): Promise<User> {
-    return this.userRepositry.findUserByUnique(data);
+  async findUserByUnique(data: UserUniqueSearchParams): Promise<User> {
+    return this.userRepository.findUserByUnique(data);
   }
 
   async createUser(createUserInput: CreateUserInput) {
@@ -24,6 +24,6 @@ export class UsersService {
       nth,
     );
 
-    return this.userRepositry.createAndSaveUser(batch, userFields);
+    return this.userRepository.createAndSaveUser(batch, userFields);
   }
 }
