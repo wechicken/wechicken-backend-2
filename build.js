@@ -15,6 +15,8 @@ require('esbuild')
       'cache-manager',
       '@nestjs/websockets',
       '@nestjs/microservices',
+      'fastify-swagger',
+      'class-transformer/storage',
     ],
     plugins: [],
   })
