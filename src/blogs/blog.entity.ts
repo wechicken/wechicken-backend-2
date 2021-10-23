@@ -5,10 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Bookmark } from 'src/bookmarks/bookmark.entity';
 import { Like } from 'src/likes/like.entity';
 import { Tag } from 'src/tags/tag.entity';
+import { User } from 'src/users/user.entity';
 
 @Entity()
 export class Blog {
@@ -27,7 +30,7 @@ export class Blog {
   @Column({ type: 'varchar', length: 2000, nullable: true })
   thumbnail: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'date' })
   written_date: Date;
 
   @CreateDateColumn()
@@ -47,4 +50,17 @@ export class Blog {
 
   @OneToMany(() => Tag, (tag) => tag.blog)
   tags: Tag[];
+
+  @ManyToOne(() => User, (user) => user.blogs)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @Column()
+  user_id: number;
+}
+
+export interface BlogResponse extends Omit<Blog, 'bookmarks' | 'likes'> {
+  is_liked: boolean;
+
+  is_bookmarked: boolean;
 }

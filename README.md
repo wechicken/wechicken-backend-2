@@ -1,5 +1,14 @@
 # JWT WECHICKEN BACKEND V2
 
+## 0. How to Start
+
+- `mac OS`: `brew install direnv`
+- `val "$(direnv hook zsh)"` >> `.zshrc`
+- `direnv allow`
+- `npm install`
+- `npm run start:db`
+- `npm run start:lambda` or `npm run start:dev`
+
 ## 1. Technical Stack
 
 - Node.js

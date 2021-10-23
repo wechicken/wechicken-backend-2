@@ -15,6 +15,7 @@ import { BlogType } from 'src/blogs/blog-type.entity';
 import { Bookmark } from 'src/bookmarks/bookmark.entity';
 import { Like } from 'src/likes/like.entity';
 import { Tag } from 'src/tags/tag.entity';
+import { Blog } from 'src/blogs/blog.entity';
 
 @Entity()
 export class User {
@@ -37,7 +38,7 @@ export class User {
   thumbnail: string;
 
   @Column({ type: 'boolean', default: false })
-  is_admin: boolean;
+  is_manager: boolean;
 
   @Column({ type: 'boolean', default: false })
   is_group_joined: boolean;
@@ -85,4 +86,7 @@ export class User {
 
   @OneToMany(() => Tag, (tag) => tag.user)
   tags: Tag[];
+
+  @OneToMany(() => Blog, (blog) => blog.user)
+  blogs: Blog[];
 }

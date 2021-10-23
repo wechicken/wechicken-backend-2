@@ -40,7 +40,7 @@ export class Batch {
   @Column({ type: 'datetime', nullable: true })
   deleted_at: Date;
 
-  @ManyToOne(() => BatchType, (batch) => batch.batches)
+  @ManyToOne(() => BatchType, (batchType) => batchType.batches)
   @JoinColumn({ name: 'batch_type_id' })
   batchType: BatchType;
 
@@ -51,5 +51,5 @@ export class Batch {
   users: User[];
 
   @Column({ nullable: true, comment: '치킨계장 user.id' })
-  manger_id: number;
+  manager_id: number;
 }
