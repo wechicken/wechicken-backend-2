@@ -13,10 +13,18 @@ async function bootstrap(): Promise<Handler> {
 }
 
 export const handler: Handler = async (
-  event: unknown,
+  event: any,
   context: Context,
   callback: Callback,
 ) => {
+  if (event.path === '/api') {
+    event.path = '/api/';
+  }
+
+  event.path = event.path.includes('swagger-ui')
+    ? `/api${event.path}`
+    : event.path;
+
   server = server ?? (await bootstrap());
   return server(event, context, callback);
 };

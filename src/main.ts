@@ -1,22 +1,13 @@
-import { ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-export async function defaultApp() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
-
-  return app;
-}
-
-async function bootstrap() {
-  const app = await defaultApp();
-
+function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('WECHICKEN')
     .setDescription('The Wechicken API description')
-    .setVersion('1.0')
+    .setVersion('1.0.0')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },
       'authorization',
@@ -24,6 +15,20 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+}
+
+export async function defaultApp() {
+  const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  setupSwagger(app);
+
+  return app;
+}
+
+async function bootstrap() {
+  const app = await defaultApp();
 
   await app.listen(3000);
 }
