@@ -4,7 +4,7 @@ app: wechicken
 
 plugins:
   - serverless-offline
-  # - serverless-plugin-optimize
+  - serverless-plugin-optimize
   - serverless-plugin-warmup
 
 provider:
@@ -54,7 +54,7 @@ custom:
   serverless-offline:
     httpPort: 8090
     noPrependStageInUrl: true
-  # optimize:
-  #   external: ['swagger-ui-dist']
+  optimize:
+    external: ['swagger-ui-dist']
   warmup:
     - production
