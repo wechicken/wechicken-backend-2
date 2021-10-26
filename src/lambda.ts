@@ -26,7 +26,7 @@ async function bootstrap(): Promise<Handler> {
     }
   }
 
-  return Promise.resolve(cachedServer);
+  return cachedServer;
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
