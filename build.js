@@ -9,7 +9,7 @@ require('esbuild')
     bundle: true,
     outfile: 'out/lambda.js',
     minify: false,
-    sourcemap: false,
+    sourcemap: true,
     external: [
       ...require('module').builtinModules,
       'cache-manager',
