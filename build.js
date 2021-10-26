@@ -17,6 +17,7 @@ require('esbuild')
       '@nestjs/microservices',
       'fastify-swagger',
       'class-transformer/storage',
+      '@nestjs/swagger',
     ],
     plugins: [],
   })
