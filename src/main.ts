@@ -17,14 +17,9 @@ export function setupSwagger(app: INestApplication) {
   SwaggerModule.setup('api', app, document);
 }
 
-export async function defaultApp() {
+async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  return app;
-}
-
-async function bootstrap() {
-  const app = await defaultApp();
   setupSwagger(app);
   await app.listen(3000);
 }
