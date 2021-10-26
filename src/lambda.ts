@@ -1,22 +1,27 @@
-import serverlessExpress from '@vendia/serverless-express';
-import { Handler, Callback, Context } from 'aws-lambda';
-import { defaultApp } from './main';
+import { createServer, proxy } from 'aws-serverless-express';
+import { Handler, Context } from 'aws-lambda';
+import { defaultApp, setupSwagger } from './main';
 
-let server: Handler;
+let cachedServer: Handler;
 
 async function bootstrap(): Promise<Handler> {
-  const app = await defaultApp();
-  await app.init();
+  if (!cachedServer) {
+    try {
+      const app = await defaultApp();
+      setupSwagger(app);
+      await app.init();
 
-  const expressApp = app.getHttpAdapter().getInstance();
-  return serverlessExpress({ app: expressApp });
+      const expressApp = app.getHttpAdapter().getInstance();
+      cachedServer = createServer(expressApp, undefined, []);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  return Promise.resolve(cachedServer);
 }
 
-export const handler: Handler = async (
-  event: any,
-  context: Context,
-  callback: Callback,
-) => {
+export const handler: Handler = async (event: any, context: Context) => {
   if (event.path === '/api') {
     event.path = '/api/';
   }
@@ -25,6 +30,6 @@ export const handler: Handler = async (
     ? `/api${event.path}`
     : event.path;
 
-  server = server ?? (await bootstrap());
-  return server(event, context, callback);
+  cachedServer = await bootstrap();
+  return proxy(cachedServer, event, context, 'PROMISE').promise;
 };
