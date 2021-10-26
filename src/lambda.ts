@@ -5,19 +5,21 @@ import { setupSwagger } from './main';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import express from 'express';
 
 let cachedServer: Handler;
 
 async function bootstrap(): Promise<Handler> {
   if (!cachedServer) {
     try {
-      const app = await NestFactory.create(AppModule);
+      const expressApp = express();
+      const adapter = new ExpressAdapter(expressApp);
+      const app = await NestFactory.create(AppModule, adapter);
       app.use(eventContext());
       app.useGlobalPipes(new ValidationPipe());
       setupSwagger(app);
       await app.init();
-
-      const expressApp = app.getHttpAdapter().getInstance();
       cachedServer = createServer(expressApp, undefined, []);
     } catch (err) {
       return Promise.reject(err);
@@ -35,11 +37,6 @@ export const handler: Handler = async (event: any, context: Context) => {
   event.path = event.path.includes('swagger-ui')
     ? `/api${event.path}`
     : event.path;
-
-  console.log(event);
-  console.log(event.headers);
-  console.log(event.path);
-  console.log(process.env.STAGE);
 
   cachedServer = await bootstrap();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
