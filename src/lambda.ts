@@ -18,7 +18,7 @@ async function bootstrap(): Promise<Handler> {
       const app = await NestFactory.create(AppModule, adapter);
       app.use(eventContext());
       app.useGlobalPipes(new ValidationPipe());
-      setupSwagger(app);
+      // setupSwagger(app);
       await app.init();
       cachedServer = createServer(expressApp, undefined, []);
     } catch (err) {
@@ -30,13 +30,13 @@ async function bootstrap(): Promise<Handler> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  if (event.path === '/api') {
-    event.path = '/api/';
-  }
+  // if (event.path === '/api') {
+  //   event.path = '/api/';
+  // }
 
-  event.path = event.path.includes('swagger-ui')
-    ? `/api${event.path}`
-    : event.path;
+  // event.path = event.path.includes('swagger-ui')
+  //   ? `/api${event.path}`
+  //   : event.path;
 
   cachedServer = await bootstrap();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
