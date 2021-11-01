@@ -17,6 +17,7 @@ async function bootstrap(): Promise<Handler> {
       const adapter = new ExpressAdapter(expressApp);
       const app = await NestFactory.create(AppModule, adapter);
       app.use(eventContext());
+      app.use(express.json());
       app.useGlobalPipes(new ValidationPipe());
       // setupSwagger(app);
       await app.init();
