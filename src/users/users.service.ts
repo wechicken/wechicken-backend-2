@@ -4,6 +4,7 @@ import { CreateUserInput } from './dto/input/create-user.input';
 import { UserUniqueSearchParams } from './dto/params/user-unique-search.params';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
+import { UpdateUserInput } from './dto/input/update-user.input';
 
 @Injectable()
 export class UsersService {
@@ -25,5 +26,9 @@ export class UsersService {
     );
 
     return this.userRepository.createAndSaveUser(batch, userFields);
+  }
+
+  async updateUser(userId: number, data: UpdateUserInput) {
+    return this.userRepository.update(userId, data);
   }
 }

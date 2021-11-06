@@ -20,10 +20,7 @@ import { CamelCaseInterceptor } from 'src/interceptors/CamelCaseInterceptor';
 import { LikesService } from 'src/likes/likes.service';
 import { User } from 'src/users/user.entity';
 import { BlogsService } from './blogs.service';
-import {
-  BlogSearchInput,
-  BlogPagingInput,
-} from './dto/input/blog-search.input';
+import { BlogSearchInput, PagingInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
 // import {
@@ -82,10 +79,10 @@ export class BlogsController {
   // })
   async getUserBlogs(
     @ValidUser() { id: user_id }: User,
-    @Query() blogPagingInput: BlogPagingInput,
+    @Query() pagingInput: PagingInput,
   ) {
     return this.blogsService.findBlogs(
-      { ...blogPagingInput, userId: user_id },
+      { ...pagingInput, userId: user_id },
       user_id,
     );
   }

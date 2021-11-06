@@ -14,5 +14,6 @@ import { LikesModule } from 'src/likes/likes.module';
   ],
   controllers: [BlogsController],
   providers: [BlogsService],
+  exports: [BlogsService],
 })
 export class BlogsModule {}

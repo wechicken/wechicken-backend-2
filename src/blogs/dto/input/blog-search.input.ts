@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 // import { ApiProperty } from '@nestjs/swagger';
 
-export class BlogPagingInput {
+export class PagingInput {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
@@ -25,7 +25,7 @@ export class BlogPagingInput {
   limit: number;
 }
 
-export class BlogSearchInput extends BlogPagingInput {
+export class BlogSearchInput extends PagingInput {
   @IsOptional()
   @IsString()
   // @ApiProperty({ description: '게시글 제목', required: false })
