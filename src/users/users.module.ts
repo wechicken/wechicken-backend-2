@@ -5,11 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './user.repository';
 import { BatchesModule } from '../batches/batches.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { UploadModule } from '../upload/upload.module';
+import { BlogsModule } from '../blogs/blogs.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserRepository]),
     BatchesModule,
+    UploadModule,
+    BlogsModule,
     forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],

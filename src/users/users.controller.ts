@@ -4,6 +4,12 @@ import {
   Post,
   HttpException,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
+  UseGuards,
+  Put,
+  Query,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateUserInput } from './dto/input/create-user.input';
@@ -20,6 +26,13 @@ import {
 //   ApiOperation,
 //   ApiTags,
 // } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ValidUser } from '../auth/decorator/ValidUser';
+import { User } from './user.entity';
+import { UploadService } from '../upload/upload.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { BlogsService } from '../blogs/blogs.service';
+import { PagingInput } from '../blogs/dto/input/blog-search.input';
 
 @Controller('users')
 // @ApiTags('유저 API')
@@ -27,7 +40,24 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
+    private readonly blogsService: BlogsService,
+    private readonly uploadService: UploadService,
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getUser(@ValidUser() { id: userId }: User) {
+    return this.usersService.findUserByUnique({ id: userId });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('blogs')
+  async getBlogsOfUser(
+    @ValidUser() { id: userId }: User,
+    @Query() pagingInput: PagingInput,
+  ) {
+    return this.blogsService.findBlogs({ ...pagingInput, userId }, userId);
+  }
 
   @Post('test/login')
   // @ApiOperation({
@@ -103,5 +133,30 @@ export class UsersController {
       { message: 'SUCCESS', data: result },
       HttpStatus.OK,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('profile-upload')
+  @UseInterceptors(FileInterceptor('profileFile'))
+  async updateUserProfile(
+    @ValidUser() { id: userId, gmail }: User,
+    @UploadedFile() profileFile: Express.Multer.File,
+  ) {
+    const imageUrl = await this.uploadService.fileUpload(gmail, profileFile);
+
+    await this.usersService.updateUser(userId, { thumbnail: imageUrl });
+
+    return { message: 'SUCCESS' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('blog-address')
+  async updateUserBlogAddress(
+    @ValidUser() { id: userId }: User,
+    @Body() { blogAddress }: { blogAddress: string },
+  ) {
+    await this.usersService.updateUser(userId, { blog_address: blogAddress });
+
+    return { message: 'SUCCESS' };
   }
 }
