@@ -11,18 +11,18 @@ import { UserUniqueSearchInput } from './dto/input/user-unique-search.input';
 import { UsersService } from './users.service';
 import {
   LoginParams,
-  UserLoginResponse,
-  UserTestLoginResponse,
+  // UserLoginResponse,
+  // UserTestLoginResponse,
 } from './dto/reponse/user-login.response';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+// import {
+//   ApiCreatedResponse,
+//   ApiOkResponse,
+//   ApiOperation,
+//   ApiTags,
+// } from '@nestjs/swagger';
 
 @Controller('users')
-@ApiTags('유저 API')
+// @ApiTags('유저 API')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
@@ -30,11 +30,11 @@ export class UsersController {
   ) {}
 
   @Post('test/login')
-  @ApiOperation({
-    summary: '테스트시, 유저 로그인 API',
-    description: '가입된 유저이메일로 로그인 가능',
-  })
-  @ApiOkResponse({ type: UserTestLoginResponse })
+  // @ApiOperation({
+  //   summary: '테스트시, 유저 로그인 API',
+  //   description: '가입된 유저이메일로 로그인 가능',
+  // })
+  // @ApiOkResponse({ type: UserTestLoginResponse })
   async logIn(@Body() userUniqueSearchInput: UserUniqueSearchInput) {
     const { gmail } = userUniqueSearchInput;
     const foundUser = await this.usersService.findUserByUnique({ gmail });
@@ -47,11 +47,11 @@ export class UsersController {
   }
 
   @Post('login/google')
-  @ApiOperation({
-    summary: '구글 소셜 로그인 API',
-    description: '구글 소셜 로그인',
-  })
-  @ApiOkResponse({ type: UserLoginResponse })
+  // @ApiOperation({
+  //   summary: '구글 소셜 로그인 API',
+  //   description: '구글 소셜 로그인',
+  // })
+  // @ApiOkResponse({ type: UserLoginResponse })
   async googleLogin(@Body() googleToken: string) {
     const googleUser: { sub: string; email: string } =
       await this.authService.getGoogleAuth(googleToken);
@@ -78,11 +78,11 @@ export class UsersController {
   }
 
   @Post('signUp')
-  @ApiOperation({
-    summary: '추가정보 및 회원생성 API',
-    description: '구글 첫 소셜 로그인 시 추가 정보 후 회원을 생성한다.',
-  })
-  @ApiCreatedResponse({ type: UserLoginResponse })
+  // @ApiOperation({
+  //   summary: '추가정보 및 회원생성 API',
+  //   description: '구글 첫 소셜 로그인 시 추가 정보 후 회원을 생성한다.',
+  // })
+  // @ApiCreatedResponse({ type: UserLoginResponse })
   async signUp(@Body() createUserInput: CreateUserInput) {
     const foundUser = await this.usersService.findUserByUnique({
       gmail: createUserInput.gmail,
