@@ -4,8 +4,6 @@ app: wechicken
 
 plugins:
   - serverless-offline
-  # - serverless-plugin-optimize
-  - serverless-plugin-warmup
 
 provider:
   lambdaHashingVersion: '20201221'
@@ -54,7 +52,3 @@ custom:
   serverless-offline:
     httpPort: 8090
     noPrependStageInUrl: true
-  # optimize:
-  #   external: ['swagger-ui-dist']
-  warmup:
-    - production

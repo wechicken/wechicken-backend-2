@@ -1,12 +1,12 @@
-name: wechicken-development
+name: wechicken-production
 
 on:
   push:
-    branches: [ development ]
+    branches: [ production ]
 
 jobs:
   build:
-    environment: development
+    environment: production
     runs-on: ubuntu-latest
 
     strategy:
