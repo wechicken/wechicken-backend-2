@@ -10,6 +10,7 @@ import {
   Put,
   Query,
   Get,
+  Patch,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateUserInput } from './dto/input/create-user.input';
@@ -33,6 +34,7 @@ import { UploadService } from '../upload/upload.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BlogsService } from '../blogs/blogs.service';
 import { PagingInput } from '../blogs/dto/input/blog-search.input';
+import { UpdateUserInput } from './dto/input/update-user.input';
 
 @Controller('users')
 // @ApiTags('유저 API')
@@ -135,27 +137,23 @@ export class UsersController {
     );
   }
 
+  @Patch('profile')
   @UseGuards(JwtAuthGuard)
   @Put('profile-upload')
-  @UseInterceptors(FileInterceptor('profileFile'))
-  async updateUserProfile(
+  @UseInterceptors(FileInterceptor('profile_file'))
+  async update(
     @ValidUser() { id: userId, gmail }: User,
-    @UploadedFile() profileFile: Express.Multer.File,
+    @Body() { blog_address }: { blog_address: string },
+    @UploadedFile() profile_file?: Express.Multer.File,
   ) {
-    const imageUrl = await this.uploadService.fileUpload(gmail, profileFile);
+    const updatedUser: UpdateUserInput = {
+      ...(blog_address && { blog_address }),
+      ...(profile_file && {
+        thumbnail: await this.uploadService.fileUpload(gmail, profile_file),
+      }),
+    };
 
-    await this.usersService.updateUser(userId, { thumbnail: imageUrl });
-
-    return { message: 'SUCCESS' };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Put('blog-address')
-  async updateUserBlogAddress(
-    @ValidUser() { id: userId }: User,
-    @Body() { blogAddress }: { blogAddress: string },
-  ) {
-    await this.usersService.updateUser(userId, { blog_address: blogAddress });
+    await this.usersService.updateUser(userId, updatedUser);
 
     return { message: 'SUCCESS' };
   }
