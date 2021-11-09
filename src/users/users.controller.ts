@@ -7,7 +7,6 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
-  Put,
   Query,
   Get,
   Patch,
@@ -139,7 +138,6 @@ export class UsersController {
 
   @Patch('profile')
   @UseGuards(JwtAuthGuard)
-  @Put('profile-upload')
   @UseInterceptors(FileInterceptor('profile_file'))
   async update(
     @ValidUser() { id: userId, gmail }: User,
