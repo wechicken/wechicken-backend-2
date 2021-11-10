@@ -108,7 +108,7 @@ export class UsersController {
     );
   }
 
-  @Post('signUp')
+  @Post('sign-up')
   // @ApiOperation({
   //   summary: '추가정보 및 회원생성 API',
   //   description: '구글 첫 소셜 로그인 시 추가 정보 후 회원을 생성한다.',
