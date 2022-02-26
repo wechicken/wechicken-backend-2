@@ -23,6 +23,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BlogsService } from '../blogs/blogs.service';
 import { PagingInput } from '../blogs/dto/input/blog-search.input';
 import { UpdateUserInput } from './dto/input/update-user.input';
+import { TokenPayload } from 'google-auth-library';
 
 @Controller('users')
 export class UsersController {
@@ -62,8 +63,9 @@ export class UsersController {
 
   @Post('login/google')
   async googleLogin(@Body() { googleToken }: { googleToken: string }) {
-    const googleUser: { sub: string; email: string } =
-      await this.authService.getGoogleAuth(googleToken);
+    const googleUser: TokenPayload = await this.authService.getGoogleAuth(
+      googleToken,
+    );
 
     const foundUser = await this.usersService.findUserByUnique({
       gmail_id: googleUser.sub,

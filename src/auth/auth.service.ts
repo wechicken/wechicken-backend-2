@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
-import { firstValueFrom } from 'rxjs';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly httpService: HttpService,
-  ) {}
+  private googleAuthClient: OAuth2Client;
+  constructor(private readonly jwtService: JwtService) {
+    this.googleAuthClient = new OAuth2Client(process.env.CLIENT_ID);
+  }
 
   async login(userId: number) {
     const payload = { userId };
@@ -20,13 +19,12 @@ export class AuthService {
 
   async getGoogleAuth(googleToken: string) {
     try {
-      const observableResponse = this.httpService.get(
-        `https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`,
-      );
+      const ticket = await this.googleAuthClient.verifyIdToken({
+        idToken: googleToken,
+        audience: process.env.CLIENT_ID,
+      });
 
-      const response = await firstValueFrom(observableResponse);
-
-      return response.data;
+      return ticket.getPayload();
     } catch (error) {
       console.log(error);
       throw error;
