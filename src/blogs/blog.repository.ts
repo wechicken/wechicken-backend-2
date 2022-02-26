@@ -30,6 +30,7 @@ export class BlogRepository extends Repository<Blog> {
         'blog',
         'user.id',
         'user.name',
+        'user.thumbnail',
         'blog_type.name',
         'batch.nth',
         'batch_type.name',
