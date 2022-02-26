@@ -11,6 +11,8 @@ const constantProvider = {
   useValue: process.env.GOOGLE_AUTH_CLIENT_ID,
 };
 
+console.log('constantProvider', constantProvider);
+
 @Module({
   imports: [
     PassportModule,

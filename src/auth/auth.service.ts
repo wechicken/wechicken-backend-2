@@ -9,10 +9,10 @@ export class AuthService {
 
   constructor(
     private readonly jwtService: JwtService,
-
     @Inject('GOOGLE_AUTH_CLIENT_ID') GOOGLE_AUTH_CLIENT_ID: string,
   ) {
     this.GOOGLE_AUTH_CLIENT_ID = GOOGLE_AUTH_CLIENT_ID;
+    console.log(GOOGLE_AUTH_CLIENT_ID);
     this.googleAuthClient = new OAuth2Client(GOOGLE_AUTH_CLIENT_ID);
   }
 
