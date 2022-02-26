@@ -6,6 +6,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
 
+const constantProvider = {
+  provide: 'GOOGLE_AUTH_CLIENT_ID',
+  useValue: process.env.GOOGLE_AUTH_CLIENT_ID,
+};
+
 @Module({
   imports: [
     PassportModule,
@@ -20,7 +25,7 @@ import { UsersModule } from 'src/users/users.module';
     }),
     forwardRef(() => UsersModule),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, constantProvider],
   exports: [AuthService],
 })
 export class AuthModule {}
