@@ -15,7 +15,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { CreateUserInput } from './dto/input/create-user.input';
 import { UserUniqueSearchInput } from './dto/input/user-unique-search.input';
 import { UsersService } from './users.service';
-import { LoginParams } from './dto/reponse/user-login.response';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ValidUser } from '../auth/decorator/ValidUser';
 import { User } from './user.entity';
@@ -62,7 +61,7 @@ export class UsersController {
   }
 
   @Post('login/google')
-  async googleLogin(@Body() googleToken: string) {
+  async googleLogin(@Body() { googleToken }: { googleToken: string }) {
     const googleUser: { sub: string; email: string } =
       await this.authService.getGoogleAuth(googleToken);
 
@@ -74,17 +73,27 @@ export class UsersController {
       return new HttpException({ message: 'FIRST' }, HttpStatus.OK);
     }
 
-    const token = await this.authService.createToken(
-      foundUser.id,
-      foundUser.batch.nth,
-    );
+    const {
+      id,
+      batch_id,
+      thumbnail,
+      is_manager,
+      is_group_joined,
+      batch: { nth },
+    } = foundUser;
 
-    const result = new LoginParams(foundUser, token);
+    const token = await this.authService.createToken(id, batch_id);
 
-    return new HttpException(
-      { message: 'SUCCESS', data: result },
-      HttpStatus.OK,
-    );
+    return {
+      message: 'SUCCESS',
+      data: {
+        token,
+        profile: thumbnail,
+        is_manager,
+        is_group_joined,
+        nth,
+      },
+    };
   }
 
   @Post('sign-up')
@@ -92,22 +101,34 @@ export class UsersController {
     const foundUser = await this.usersService.findUserByUnique({
       gmail: createUserInput.gmail,
     });
+
     if (foundUser) {
       throw new HttpException('이미 가입된 사용자', HttpStatus.CONFLICT);
     }
 
     const createdUser = await this.usersService.createUser(createUserInput);
-    const token = await this.authService.createToken(
-      createdUser.id,
-      createdUser.batch.nth,
-    );
 
-    const result = new LoginParams(createdUser, token);
+    const {
+      id,
+      batch_id,
+      thumbnail,
+      is_manager,
+      is_group_joined,
+      batch: { nth },
+    } = createdUser;
 
-    return new HttpException(
-      { message: 'SUCCESS', data: result },
-      HttpStatus.OK,
-    );
+    const token = await this.authService.createToken(id, batch_id);
+
+    return {
+      message: 'SUCCESS',
+      data: {
+        token,
+        thumbnail,
+        is_manager,
+        is_group_joined,
+        nth,
+      },
+    };
   }
 
   @Patch('profile')

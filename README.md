@@ -3,7 +3,7 @@
 ## 0. How to Start
 
 - `mac OS`: `brew install direnv`
-- `val "$(direnv hook zsh)"` >> `.zshrc`
+- `eval "$(direnv hook zsh)"` >> `.zshrc`
 - `direnv allow`
 - `npm install`
 - `npm run start:db`
