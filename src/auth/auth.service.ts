@@ -19,6 +19,8 @@ export class AuthService {
 
   async getGoogleAuth(googleToken: string) {
     try {
+      console.log(googleToken);
+      console.log(process.env.GOOGLE_AUTH_CLIENT_ID);
       const ticket = await this.googleAuthClient.verifyIdToken({
         idToken: googleToken,
         audience: process.env.GOOGLE_AUTH_CLIENT_ID,
@@ -26,6 +28,7 @@ export class AuthService {
 
       return ticket.getPayload();
     } catch (error) {
+      console.log(process.env.GOOGLE_AUTH_CLIENT_ID);
       console.log(error);
       throw error;
     }
