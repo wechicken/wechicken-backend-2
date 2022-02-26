@@ -35,6 +35,11 @@ jobs:
       - name: CI Test
         run: npm run development:CI
 
+      - name: ECHO NODE_ENV
+        run: |
+          echo ${{ secrets.NODE_ENV }}
+          echo ${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
+
       - name: DEPLOY
         env:
           NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -45,4 +50,5 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
           GOOGLE_AUTH_CLIENT_ID: ${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
+          GOOGLE_AUTH_SECRET_KEY: ${{ secrets.GOOGLE_AUTH_SECRET_KEY }}
         run: npm run deploy

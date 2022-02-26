@@ -6,14 +6,19 @@ import { OAuth2Client } from 'google-auth-library';
 export class AuthService {
   private googleAuthClient: OAuth2Client;
   private readonly GOOGLE_AUTH_CLIENT_ID: string;
+  private readonly GOOGLE_AUTH_SECRET_KEY: string;
 
   constructor(
     private readonly jwtService: JwtService,
     @Inject('GOOGLE_AUTH_CLIENT_ID') GOOGLE_AUTH_CLIENT_ID: string,
+    @Inject('GOOGLE_AUTH_SECRET_KEY') GOOGLE_AUTH_SECRET_KEY: string,
   ) {
     this.GOOGLE_AUTH_CLIENT_ID = GOOGLE_AUTH_CLIENT_ID;
-    console.log(GOOGLE_AUTH_CLIENT_ID);
-    this.googleAuthClient = new OAuth2Client(GOOGLE_AUTH_CLIENT_ID);
+    this.GOOGLE_AUTH_SECRET_KEY = GOOGLE_AUTH_SECRET_KEY;
+    this.googleAuthClient = new OAuth2Client(
+      GOOGLE_AUTH_CLIENT_ID,
+      GOOGLE_AUTH_SECRET_KEY,
+    );
   }
 
   async login(userId: number) {
@@ -29,6 +34,7 @@ export class AuthService {
       console.log(googleToken);
       console.log('injected');
       console.log(this.GOOGLE_AUTH_CLIENT_ID);
+      console.log(this.GOOGLE_AUTH_SECRET_KEY);
       const ticket = await this.googleAuthClient.verifyIdToken({
         idToken: googleToken,
         audience: this.GOOGLE_AUTH_CLIENT_ID,
@@ -36,7 +42,6 @@ export class AuthService {
 
       return ticket.getPayload();
     } catch (error) {
-      console.log(process.env.GOOGLE_AUTH_CLIENT_ID);
       console.log(error);
       throw error;
     }

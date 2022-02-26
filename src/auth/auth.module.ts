@@ -7,6 +7,7 @@ import { UsersModule } from 'src/users/users.module';
 
 console.log('AUTH MODULE');
 console.log('GOOGLE_AUTH_CLIENT_ID', process.env.GOOGLE_AUTH_CLIENT_ID);
+console.log('GOOGLE_AUTH_SECRET_KEY', process.env.GOOGLE_AUTH_SECRET_KEY);
 console.log('DB HOST', process.env.DB_HOST);
 
 @Module({
@@ -23,6 +24,10 @@ console.log('DB HOST', process.env.DB_HOST);
     {
       provide: 'GOOGLE_AUTH_CLIENT_ID',
       useValue: process.env.GOOGLE_AUTH_CLIENT_ID,
+    },
+    {
+      provide: 'GOOGLE_AUTH_SECRET_KEY',
+      useValue: process.env.GOOGLE_AUTH_SECRET_KEY,
     },
   ],
   exports: [AuthService],
