@@ -19,12 +19,18 @@ export class AuthService {
   }
 
   async getGoogleAuth(googleToken: string) {
-    const observableResponse = this.httpService.get(
-      `https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`,
-    );
-    const response = await firstValueFrom(observableResponse);
+    try {
+      const observableResponse = this.httpService.get(
+        `https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`,
+      );
 
-    return response.data;
+      const response = await firstValueFrom(observableResponse);
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   async createToken(userId: number, batchNth: number) {
