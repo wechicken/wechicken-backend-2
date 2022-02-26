@@ -6,7 +6,7 @@ import { OAuth2Client } from 'google-auth-library';
 export class AuthService {
   private googleAuthClient: OAuth2Client;
   constructor(private readonly jwtService: JwtService) {
-    this.googleAuthClient = new OAuth2Client(process.env.CLIENT_ID);
+    this.googleAuthClient = new OAuth2Client(process.env.GOOGLE_AUTH_CLIENT_ID);
   }
 
   async login(userId: number) {
@@ -21,7 +21,7 @@ export class AuthService {
     try {
       const ticket = await this.googleAuthClient.verifyIdToken({
         idToken: googleToken,
-        audience: process.env.CLIENT_ID,
+        audience: process.env.GOOGLE_AUTH_CLIENT_ID,
       });
 
       return ticket.getPayload();

@@ -44,4 +44,5 @@ jobs:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          GOOGLE_AUTH_CLIENT_ID: ${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
         run: npm run deploy
