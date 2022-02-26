@@ -1,17 +1,13 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
 import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
 
-const constantProvider = {
-  provide: 'GOOGLE_AUTH_CLIENT_ID',
-  useValue: process.env.GOOGLE_AUTH_CLIENT_ID,
-};
-
-console.log('constantProvider', constantProvider);
+console.log('AUTH MODULE');
+console.log('GOOGLE_AUTH_CLIENT_ID', process.env.GOOGLE_AUTH_CLIENT_ID);
+console.log('DB HOST', process.env.DB_HOST);
 
 @Module({
   imports: [
@@ -19,15 +15,16 @@ console.log('constantProvider', constantProvider);
     JwtModule.register({
       secret: 'SECRET_KEY', // 환경변수로 후에 주입해야 함
     }),
-    HttpModule.registerAsync({
-      useFactory: () => ({
-        timeout: 5000,
-        maxRedirects: 5,
-      }),
-    }),
     forwardRef(() => UsersModule),
   ],
-  providers: [AuthService, JwtStrategy, constantProvider],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    {
+      provide: 'GOOGLE_AUTH_CLIENT_ID',
+      useValue: process.env.GOOGLE_AUTH_CLIENT_ID,
+    },
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}
