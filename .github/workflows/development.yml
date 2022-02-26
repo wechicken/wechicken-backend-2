@@ -32,8 +32,8 @@ jobs:
 #      - name: direnv
 #        uses: HatsuneMiku3939/direnv-action@v1
 
-#      - name: CI Test
-#        run: npm run test:CI
+      - name: CI Test
+        run: npm run development:CI
 
       - name: DEPLOY
         env:
