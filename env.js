@@ -5,4 +5,5 @@ module.exports = {
   DB_USERNAME: process.env.DB_USERNAME,
   DB_PASSWORD: process.env.DB_PASSWORD,
   DB_DATABASE: process.env.DB_DATABASE,
+  GOOGLE_AUTH_CLIENT_ID: process.env.GOOGLE_AUTH_CLIENT_ID,
 };
