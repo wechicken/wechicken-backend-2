@@ -21,14 +21,14 @@ console.log('DB HOST', process.env.DB_HOST);
   providers: [
     AuthService,
     JwtStrategy,
-    // {
-    //   provide: 'GOOGLE_AUTH_CLIENT_ID',
-    //   useValue: process.env.GOOGLE_AUTH_CLIENT_ID,
-    // },
-    // {
-    //   provide: 'GOOGLE_AUTH_SECRET_KEY',
-    //   useValue: process.env.GOOGLE_AUTH_SECRET_KEY,
-    // },
+    {
+      provide: 'GOOGLE_AUTH_CLIENT_ID',
+      useValue: process.env.GOOGLE_AUTH_CLIENT_ID,
+    },
+    {
+      provide: 'GOOGLE_AUTH_SECRET_KEY',
+      useValue: process.env.GOOGLE_AUTH_SECRET_KEY,
+    },
   ],
   exports: [AuthService],
 })
