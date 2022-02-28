@@ -33,6 +33,7 @@ export class AuthService {
     try {
       const ticket = await this.googleAuthClient.verifyIdToken({
         idToken: googleToken,
+        audience: this.GOOGLE_AUTH_CLIENT_ID,
       });
 
       return ticket.getPayload();
