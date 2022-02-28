@@ -13,8 +13,8 @@ export class AuthService {
     @Inject('GOOGLE_AUTH_CLIENT_ID') GOOGLE_AUTH_CLIENT_ID: string,
     @Inject('GOOGLE_AUTH_SECRET_KEY') GOOGLE_AUTH_SECRET_KEY: string,
   ) {
-    this.GOOGLE_AUTH_CLIENT_ID = 'CLIENT_ID';
-    this.GOOGLE_AUTH_SECRET_KEY = 'CLIENT_SECRET';
+    this.GOOGLE_AUTH_CLIENT_ID = GOOGLE_AUTH_CLIENT_ID;
+    this.GOOGLE_AUTH_SECRET_KEY = GOOGLE_AUTH_SECRET_KEY;
     this.googleAuthClient = new OAuth2Client(
       this.GOOGLE_AUTH_CLIENT_ID,
       this.GOOGLE_AUTH_SECRET_KEY,
@@ -33,7 +33,6 @@ export class AuthService {
     try {
       const ticket = await this.googleAuthClient.verifyIdToken({
         idToken: googleToken,
-        audience: this.GOOGLE_AUTH_CLIENT_ID,
       });
 
       return ticket.getPayload();
