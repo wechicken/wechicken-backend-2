@@ -53,6 +53,33 @@ export class BlogRepository extends Repository<Blog> {
       .getMany();
   }
 
+  findBlogsByUser(query, user_id: number): Promise<Blog[]> {
+    return this.createQueryBuilder('blog')
+      .select([
+        'blog',
+        'user.id',
+        'user.name',
+        'user.thumbnail',
+        'blog_type.name',
+        'batch.nth',
+        'batch_type.name',
+        'bookmark.status',
+        'like.status',
+      ])
+      .innerJoin('blog.user', 'user')
+      .innerJoin('user.batch', 'batch')
+      .leftJoin('user.blogType', 'blog_type')
+      .innerJoin('batch.batchType', 'batch_type')
+      .leftJoin('blog.bookmarks', 'bookmark', 'bookmark.user_id = :user_id', {
+        user_id,
+      })
+      .leftJoin('blog.likes', 'like', 'like.user_id = :user_id', { user_id })
+      .where(query, { user_id })
+      .andWhere('blog.deleted_at IS NULL')
+      .orderBy('blog.written_date', 'DESC')
+      .getMany();
+  }
+
   findBlogById(blog_id: number): Promise<Blog> {
     return this.createQueryBuilder('blog')
       .where('blog.id = :blog_id', { blog_id })

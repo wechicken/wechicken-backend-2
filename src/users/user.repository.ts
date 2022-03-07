@@ -12,12 +12,11 @@ export class UserRepository extends Repository<User> {
       data,
       F.entries,
       ([tuple]) => tuple,
-      ([k, v]) => [`${k} = :${k}`, { [k]: v }],
+      ([k, v]) => [`user.${k} = :${k}`, { [k]: v }],
     );
 
-    // return this.findOne({ [uniqueKey]: data[uniqueKey] });
     return this.createQueryBuilder('user')
-      .select(['user', 'batch.nth'])
+      .select(['user', 'batch.nth', 'batch.title'])
       .innerJoin('user.batch', 'batch')
       .where(query, queryParam)
       .getOne();

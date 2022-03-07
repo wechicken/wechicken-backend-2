@@ -19,7 +19,7 @@ import { BookmarksService } from 'src/bookmarks/bookmarks.service';
 import { CamelCaseInterceptor } from 'src/interceptors/CamelCaseInterceptor';
 import { LikesService } from 'src/likes/likes.service';
 import { User } from 'src/users/user.entity';
-import { BlogsService } from './blogs.service';
+import { BlogsService, FIND_BLOGS_BY_USER_INPUT } from './blogs.service';
 import { BlogSearchInput, PagingInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
@@ -181,5 +181,23 @@ export class BlogsController {
     }
 
     return { message: 'SUCCESS' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/likes')
+  async getLikedBlogsByUser(@ValidUser() { id: user_id }: User) {
+    return this.blogsService.findBlogsByUser(
+      user_id,
+      FIND_BLOGS_BY_USER_INPUT.LIKE,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/bookmarks')
+  async getBookmarkedBlogsByUser(@ValidUser() { id: user_id }: User) {
+    return this.blogsService.findBlogsByUser(
+      user_id,
+      FIND_BLOGS_BY_USER_INPUT.BOOKMARK,
+    );
   }
 }

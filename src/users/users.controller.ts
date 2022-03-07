@@ -10,6 +10,7 @@ import {
   Query,
   Get,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateUserInput } from './dto/input/create-user.input';
@@ -24,7 +25,9 @@ import { BlogsService } from '../blogs/blogs.service';
 import { PagingInput } from '../blogs/dto/input/blog-search.input';
 import { UpdateUserInput } from './dto/input/update-user.input';
 import { TokenPayload } from 'google-auth-library';
+import { CamelCaseInterceptor } from '../interceptors/CamelCaseInterceptor';
 
+@UseInterceptors(CamelCaseInterceptor)
 @Controller('users')
 export class UsersController {
   constructor(
@@ -33,12 +36,6 @@ export class UsersController {
     private readonly blogsService: BlogsService,
     private readonly uploadService: UploadService,
   ) {}
-
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  async getUser(@ValidUser() { id: userId }: User) {
-    return this.usersService.findUserByUnique({ id: userId });
-  }
 
   @UseGuards(JwtAuthGuard)
   @Get('blogs')
@@ -60,11 +57,12 @@ export class UsersController {
 
     const {
       id,
+      name,
       batch_id,
       thumbnail,
       is_manager,
       is_group_joined,
-      batch: { nth },
+      batch: { nth, title },
     } = foundUser;
 
     const token = await this.authService.createToken(id, batch_id);
@@ -73,10 +71,12 @@ export class UsersController {
       message: 'SUCCESS',
       data: {
         token,
-        profile: thumbnail,
+        user_name: name,
+        user_thumbnail: thumbnail,
         is_manager,
         is_group_joined,
-        nth,
+        batch_nth: nth,
+        batch_title: title,
       },
     };
   }
@@ -97,11 +97,12 @@ export class UsersController {
 
     const {
       id,
+      name,
       batch_id,
       thumbnail,
       is_manager,
       is_group_joined,
-      batch: { nth },
+      batch: { nth, title },
     } = foundUser;
 
     const token = await this.authService.createToken(id, batch_id);
@@ -110,10 +111,12 @@ export class UsersController {
       message: 'SUCCESS',
       data: {
         token,
-        profile: thumbnail,
+        user_name: name,
+        user_thumbnail: thumbnail,
         is_manager,
         is_group_joined,
-        nth,
+        batch_nth: nth,
+        batch_title: title,
       },
     };
   }
@@ -132,11 +135,12 @@ export class UsersController {
 
     const {
       id,
+      name,
       batch_id,
       thumbnail,
       is_manager,
       is_group_joined,
-      batch: { nth },
+      batch: { nth, title },
     } = createdUser;
 
     const token = await this.authService.createToken(id, batch_id);
@@ -145,27 +149,55 @@ export class UsersController {
       message: 'SUCCESS',
       data: {
         token,
-        thumbnail,
+        user_name: name,
+        user_thumbnail: thumbnail,
         is_manager,
         is_group_joined,
-        nth,
+        batch_nth: nth,
+        batch_title: title,
       },
     };
   }
 
-  @Patch('profile')
+  @Patch('blog_address')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('profile_file'))
-  async update(
-    @ValidUser() { id: userId, gmail }: User,
+  async patchUserBlogAddress(
+    @ValidUser() { id: userId }: User,
     @Body() { blog_address }: { blog_address: string },
-    @UploadedFile() profile_file?: Express.Multer.File,
   ) {
     const updatedUser: UpdateUserInput = {
-      ...(blog_address && { blog_address }),
-      ...(profile_file && {
-        thumbnail: await this.uploadService.fileUpload(gmail, profile_file),
-      }),
+      blog_address,
+    };
+
+    await this.usersService.updateUser(userId, updatedUser);
+
+    return { message: 'SUCCESS' };
+  }
+
+  @Patch('thumbnail')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  async update(
+    @ValidUser() { id: userId, gmail }: User,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    console.log(file);
+    const uploadedThumbnail = await this.uploadService.fileUpload(gmail, file);
+
+    const updatedUser: UpdateUserInput = {
+      thumbnail: uploadedThumbnail,
+    };
+
+    await this.usersService.updateUser(userId, updatedUser);
+
+    return { message: 'SUCCESS' };
+  }
+
+  @Delete('thumbnail')
+  @UseGuards(JwtAuthGuard)
+  async deleteUserThumbnail(@ValidUser() { id: userId }: User) {
+    const updatedUser: UpdateUserInput = {
+      thumbnail: '',
     };
 
     await this.usersService.updateUser(userId, updatedUser);

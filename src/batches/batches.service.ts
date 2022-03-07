@@ -2,41 +2,27 @@ import { Injectable } from '@nestjs/common';
 import { DaysService } from 'src/days/days.service';
 import { Batch } from './batch.entity';
 import { BatchRepository } from './batch.repository';
-import {
-  go,
-  pipe,
-  map,
-  indexBy,
-  groupBy,
-  extend,
-  omit,
-  sortBy,
-  sortByDesc,
-  mapObject,
-  extendRight,
-  object,
-  curry,
-} from 'fxjs';
+import * as F from 'fxjs/Strict';
 import * as L from 'fxjs/Lazy';
 
-const typeCasting = curry(({ targetKey, type }, obj) =>
-  go(
+const typeCasting = F.curry(({ targetKey, type }, obj) =>
+  F.go(
     obj,
     L.entries,
     L.map(([k, v]) => [k, k === targetKey ? type(v) : v]),
-    object,
+    F.object,
   ),
 );
 
-L.merge = curry(({ targetArr, joinKey }, arr) => {
-  const targetObj = go(
+L.merge = F.curry(({ targetArr, joinKey }, arr) => {
+  const targetObj = F.go(
     targetArr,
-    indexBy((el) => el[joinKey]),
+    F.indexBy((el) => el[joinKey]),
   );
 
-  return go(
+  return F.go(
     arr,
-    L.map((el) => extend(el, targetObj[el[joinKey]])),
+    L.map((el) => F.extend(el, targetObj[el[joinKey]])),
   );
 });
 
@@ -59,9 +45,10 @@ export class BatchesService {
   }
 
   async getBatchRanks(batch_id: number) {
-    return go(
+    console.log(batch_id);
+    return F.go(
       this.batchRepository.getTopThreeUsersByBlogCount(batch_id),
-      map(typeCasting({ targetKey: 'blogs_count', type: Number })),
+      F.map(typeCasting({ targetKey: 'blogs_count', type: Number })),
     );
   }
 
@@ -77,7 +64,7 @@ export class BatchesService {
       to,
     );
 
-    const blogCounts = go(
+    const blogCounts = F.go(
       blogCountsByUserId,
       L.map(typeCasting({ targetKey: 'blogs_count', type: Number })),
     );
@@ -92,13 +79,13 @@ export class BatchesService {
           : (user.batch_count_per_week - user.blogs_count) * user.batch_penalty,
     });
 
-    return go(
+    return F.go(
       usersOfBatch,
-      L.map(extendRight({ blogs_count: 0 })),
+      L.map(F.extendRight({ blogs_count: 0 })),
       L.merge({ targetArr: blogCounts, joinKey: 'user_id' }),
       L.map(calculatePenalty),
-      L.map(omit(['batch_count_per_week', 'batch_penalty'])),
-      sortByDesc('penalty'),
+      L.map(F.omit(['batch_count_per_week', 'batch_penalty'])),
+      F.sortByDesc('penalty'),
     );
   }
 
@@ -116,11 +103,13 @@ export class BatchesService {
       ...blog,
     });
 
-    return go(
+    return F.go(
       blogs,
       L.map(handleDate),
-      groupBy(({ day_of_date }) => day_of_date),
-      mapObject(pipe(L.map(omit(['day_of_date'])), sortBy(['user_name']))),
+      F.groupBy(({ day_of_date }) => day_of_date),
+      F.mapObject(
+        F.pipe(L.map(F.omit(['day_of_date'])), F.sortBy(['user_name'])),
+      ),
     );
   }
 }
