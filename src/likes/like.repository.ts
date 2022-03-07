@@ -4,7 +4,7 @@ import { Like } from './like.entity';
 @EntityRepository(Like)
 export class LikeRepository extends Repository<Like> {
   findLikeByUniqueKey(user_id: number, blog_id: number) {
-    return this.createQueryBuilder('bookmark')
+    return this.createQueryBuilder('like')
       .where('blog_id = :blog_id', { blog_id })
       .andWhere('user_id = :user_id', { user_id })
       .getOne();

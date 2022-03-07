@@ -4,7 +4,15 @@ import { BlogRepository } from './blog.repository';
 import { BlogSearchInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
-import { go, object, entries, each, map, keys, join, goS, stopIf } from 'fxjs';
+import * as F from 'fxjs/Strict';
+
+export const FIND_BLOGS_BY_USER_INPUT = {
+  LIKE: 'like',
+  BOOKMARK: 'bookmark',
+} as const;
+
+type FIND_BLOGS_BY_USER_INPUT =
+  typeof FIND_BLOGS_BY_USER_INPUT[keyof typeof FIND_BLOGS_BY_USER_INPUT];
 
 @Injectable()
 export class BlogsService {
@@ -26,11 +34,21 @@ export class BlogsService {
       user_id,
     );
 
-    return blogs.map(({ likes, bookmarks, ...blog }) => ({
-      ...blog,
-      is_liked: !!likes.length && likes[0].status,
-      is_bookmarked: !!bookmarks.length && bookmarks[0].status,
-    }));
+    return this.buildBlogResponse(blogs);
+  }
+
+  async findBlogsByUser(user_id: number, by: FIND_BLOGS_BY_USER_INPUT) {
+    const queryMapper = {
+      like: 'like.user_id = :user_id AND like.status = true',
+      bookmark: 'bookmark.user_id = :user_id AND bookmark.status = true',
+    };
+
+    const blogs = await this.blogRepository.findBlogsByUser(
+      queryMapper[by],
+      user_id,
+    );
+
+    return this.buildBlogResponse(blogs);
   }
 
   async findBlogById(blog_id: number): Promise<Blog> {
@@ -75,22 +93,30 @@ export class BlogsService {
       return v;
     };
 
-    const query = goS(
+    const query = F.goS(
       options,
-      keys,
-      stopIf((a) => !a.length, ''),
-      map((key) => queryMapper[key]),
-      each(throwErrorIfBadRequest),
-      join(' AND '),
+      F.keys,
+      F.stopIf((a) => !a.length, ''),
+      F.map((key) => queryMapper[key]),
+      F.each(throwErrorIfBadRequest),
+      F.join(' AND '),
     );
 
-    const queryParams = go(
+    const queryParams = F.go(
       options,
-      entries,
-      map(([k, v]) => [k, valueTransformMapper[k](v)]),
-      object,
+      F.entries,
+      F.map(([k, v]) => [k, valueTransformMapper[k](v)]),
+      F.object,
     );
 
     return [query, queryParams];
+  }
+
+  private buildBlogResponse(blogs: Blog[]): BlogResponse[] {
+    return blogs.map(({ likes, bookmarks, ...blog }) => ({
+      ...blog,
+      is_liked: !!likes.length && likes[0].status,
+      is_bookmarked: !!bookmarks.length && bookmarks[0].status,
+    }));
   }
 }
