@@ -58,7 +58,27 @@ export class UsersController {
       throw new HttpException('가입되지 않은 사용자', HttpStatus.NOT_FOUND);
     }
 
-    return this.authService.login(foundUser.id);
+    const {
+      id,
+      batch_id,
+      thumbnail,
+      is_manager,
+      is_group_joined,
+      batch: { nth },
+    } = foundUser;
+
+    const token = await this.authService.createToken(id, batch_id);
+
+    return {
+      message: 'SUCCESS',
+      data: {
+        token,
+        profile: thumbnail,
+        is_manager,
+        is_group_joined,
+        nth,
+      },
+    };
   }
 
   @Post('login/google')
