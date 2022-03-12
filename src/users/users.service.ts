@@ -31,4 +31,18 @@ export class UsersService {
   async updateUser(userId: number, data: UpdateUserInput) {
     return this.userRepository.update(userId, data);
   }
+
+  createUserResponse(user: User): Partial<User> {
+    const {
+      id,
+      gmail_id,
+      batch_id,
+      created_at,
+      updated_at,
+      deleted_at,
+      ...userResponse
+    } = user;
+
+    return userResponse;
+  }
 }
