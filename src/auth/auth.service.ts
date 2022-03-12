@@ -1,25 +1,22 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
   private googleAuthClient: OAuth2Client;
   private readonly GOOGLE_AUTH_CLIENT_ID: string;
-  private readonly GOOGLE_AUTH_SECRET_KEY: string;
 
   constructor(
     private readonly jwtService: JwtService,
+    private readonly httpService: HttpService,
     @Inject('GOOGLE_AUTH_CLIENT_ID') GOOGLE_AUTH_CLIENT_ID: string,
-    @Inject('GOOGLE_AUTH_SECRET_KEY') GOOGLE_AUTH_SECRET_KEY: string,
   ) {
     this.GOOGLE_AUTH_CLIENT_ID = GOOGLE_AUTH_CLIENT_ID;
-    this.GOOGLE_AUTH_SECRET_KEY = GOOGLE_AUTH_SECRET_KEY;
 
-    this.googleAuthClient = new OAuth2Client(
-      this.GOOGLE_AUTH_CLIENT_ID,
-      this.GOOGLE_AUTH_SECRET_KEY,
-    );
+    this.googleAuthClient = new OAuth2Client(this.GOOGLE_AUTH_CLIENT_ID);
   }
 
   async login(userId: number) {
@@ -32,16 +29,27 @@ export class AuthService {
 
   async getGoogleAuth(googleToken: string) {
     try {
-      const ticket = await this.googleAuthClient.verifyIdToken({
-        idToken: googleToken,
-        // audience: this.GOOGLE_AUTH_CLIENT_ID,
-      });
-      console.log(this.GOOGLE_AUTH_CLIENT_ID);
-      console.log(this.GOOGLE_AUTH_SECRET_KEY);
-      console.log(this.googleAuthClient);
-      console.log(ticket);
+      console.log('AUTH SERVICE getGoogleAuth', this.GOOGLE_AUTH_CLIENT_ID);
+      console.log('AUTH SERVICE getGoogleAuth', this.googleAuthClient);
 
-      return ticket.getPayload();
+      // const ticket = await this.googleAuthClient.verifyIdToken({
+      //   idToken: googleToken,
+      // });
+
+      // const ticket = await firstValueFrom(
+      //   this.httpService.get(
+      //     `https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`,
+      //   ),
+      // );
+
+      const observableResponse = this.httpService.get(
+        `https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`,
+      );
+      const response = await firstValueFrom(observableResponse);
+      const ticket = response.data;
+
+      console.log(ticket);
+      return ticket;
     } catch (error) {
       console.log(error);
       throw error;

@@ -38,6 +38,13 @@ export class UsersController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
+  @Get('/')
+  async getUser(@ValidUser() { id }: User) {
+    const foundUser = await this.usersService.findUserByUnique({ id });
+    return this.usersService.createUserResponse(foundUser);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('blogs')
   async getBlogsOfUser(
     @ValidUser() { id: userId }: User,
@@ -55,29 +62,12 @@ export class UsersController {
       throw new HttpException('가입되지 않은 사용자', HttpStatus.NOT_FOUND);
     }
 
-    const {
-      id,
-      name,
-      batch_id,
-      thumbnail,
-      is_manager,
-      is_group_joined,
-      batch: { nth, title },
-    } = foundUser;
-
+    const { id, batch_id } = foundUser;
     const token = await this.authService.createToken(id, batch_id);
 
     return {
-      message: 'SUCCESS',
-      data: {
-        token,
-        user_name: name,
-        user_thumbnail: thumbnail,
-        is_manager,
-        is_group_joined,
-        batch_nth: nth,
-        batch_title: title,
-      },
+      token,
+      ...this.usersService.createUserResponse(foundUser),
     };
   }
 
@@ -95,29 +85,12 @@ export class UsersController {
       return new HttpException({ message: 'FIRST' }, HttpStatus.OK);
     }
 
-    const {
-      id,
-      name,
-      batch_id,
-      thumbnail,
-      is_manager,
-      is_group_joined,
-      batch: { nth, title },
-    } = foundUser;
-
+    const { id, batch_id } = foundUser;
     const token = await this.authService.createToken(id, batch_id);
 
     return {
-      message: 'SUCCESS',
-      data: {
-        token,
-        user_name: name,
-        user_thumbnail: thumbnail,
-        is_manager,
-        is_group_joined,
-        batch_nth: nth,
-        batch_title: title,
-      },
+      token,
+      ...this.usersService.createUserResponse(foundUser),
     };
   }
 
@@ -133,29 +106,12 @@ export class UsersController {
 
     const createdUser = await this.usersService.createUser(createUserInput);
 
-    const {
-      id,
-      name,
-      batch_id,
-      thumbnail,
-      is_manager,
-      is_group_joined,
-      batch: { nth, title },
-    } = createdUser;
-
+    const { id, batch_id } = createdUser;
     const token = await this.authService.createToken(id, batch_id);
 
     return {
-      message: 'SUCCESS',
-      data: {
-        token,
-        user_name: name,
-        user_thumbnail: thumbnail,
-        is_manager,
-        is_group_joined,
-        batch_nth: nth,
-        batch_title: title,
-      },
+      token,
+      ...this.usersService.createUserResponse(foundUser),
     };
   }
 
