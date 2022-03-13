@@ -66,6 +66,7 @@ export class UsersController {
     const token = await this.authService.createToken(id, batch_id);
 
     return {
+      message: 'SUCCESS',
       token,
       ...this.usersService.createUserResponse(foundUser),
     };
@@ -89,6 +90,7 @@ export class UsersController {
     const token = await this.authService.createToken(id, batch_id);
 
     return {
+      message: 'SUCCESS',
       token,
       ...this.usersService.createUserResponse(foundUser),
     };
@@ -110,8 +112,9 @@ export class UsersController {
     const token = await this.authService.createToken(id, batch_id);
 
     return {
+      message: 'SUCCESS',
       token,
-      ...this.usersService.createUserResponse(foundUser),
+      ...this.usersService.createUserResponse(createdUser),
     };
   }
 
@@ -137,7 +140,6 @@ export class UsersController {
     @ValidUser() { id: userId, gmail }: User,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    console.log(file);
     const uploadedThumbnail = await this.uploadService.fileUpload(gmail, file);
 
     const updatedUser: UpdateUserInput = {

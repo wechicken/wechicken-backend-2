@@ -45,7 +45,6 @@ export class BatchesService {
   }
 
   async getBatchRanks(batch_id: number) {
-    console.log(batch_id);
     return F.go(
       this.batchRepository.getTopThreeUsersByBlogCount(batch_id),
       F.map(typeCasting({ targetKey: 'blogs_count', type: Number })),
