@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
 import { HttpModule } from '@nestjs/axios';
+import { DaysModule } from '../days/days.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { HttpModule } from '@nestjs/axios';
     }),
     forwardRef(() => UsersModule),
     HttpModule,
+    DaysModule,
   ],
   providers: [
     AuthService,

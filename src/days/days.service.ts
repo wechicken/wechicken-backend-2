@@ -5,6 +5,8 @@ import ko from 'dayjs/locale/ko';
 
 @Injectable()
 export class DaysService {
+  private readonly MAX_TOKEN_LIFETIME_SECS = 86400;
+
   constructor() {
     dayjs.extend(relativeTime);
     dayjs.locale({
@@ -37,5 +39,10 @@ export class DaysService {
 
   getDateForm(date: string): string {
     return dayjs(date).format('YYYY-MM-DD');
+  }
+
+  isTokenValidByExpiredTime(exp: number): boolean {
+    const now = new Date().getTime() / 1000;
+    return exp < now + this.MAX_TOKEN_LIFETIME_SECS;
   }
 }
