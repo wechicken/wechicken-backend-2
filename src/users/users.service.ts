@@ -5,6 +5,7 @@ import { UserUniqueSearchParams } from './dto/params/user-unique-search.params';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 import { UpdateUserInput } from './dto/input/update-user.input';
+import { PartialDeep } from 'type-fest';
 
 @Injectable()
 export class UsersService {
@@ -32,7 +33,7 @@ export class UsersService {
     return this.userRepository.update(userId, data);
   }
 
-  createUserResponse(user: User): Partial<User> {
+  createUserResponse(user: User): PartialDeep<User> {
     const {
       id,
       gmail_id,
@@ -43,6 +44,10 @@ export class UsersService {
       ...userResponse
     } = user;
 
-    return userResponse;
+    const {
+      batch: { nth, title },
+    } = userResponse;
+
+    return { ...userResponse, batch: { nth, title } };
   }
 }

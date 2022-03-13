@@ -9,6 +9,7 @@ import * as F from 'fxjs/Strict';
 export class AuthService {
   private readonly googleAuthClient: OAuth2Client;
   private readonly GOOGLE_AUTH_CLIENT_ID: string;
+  private readonly GOOGLE_AUTH_ISSUER: string = 'accounts.google.com';
 
   constructor(
     private readonly jwtService: JwtService,
@@ -45,7 +46,7 @@ export class AuthService {
     const { aud, iss, exp } = decodedPayload;
 
     const conditions = {
-      iss: 'accounts.google.com' === iss,
+      iss: this.GOOGLE_AUTH_ISSUER === iss,
       aud: this.GOOGLE_AUTH_CLIENT_ID === aud,
       exp: this.daysService.isTokenValidByExpiredTime(exp),
     };
