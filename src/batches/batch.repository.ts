@@ -38,6 +38,7 @@ export class BatchRepository extends Repository<Batch> {
       })
       .innerJoin('user.blogs', 'blog')
       .where('blog.written_datetime BETWEEN :from AND :to', { from, to })
+      .andWhere('blog.deleted_at IS NULL')
       .groupBy('user.id')
       .getRawMany();
   }
@@ -74,6 +75,7 @@ export class BatchRepository extends Repository<Batch> {
       .innerJoin('user.blogs', 'blog')
       .leftJoin('user.blogType', 'blog_type')
       .where('blog.written_datetime BETWEEN :from AND :to', { from, to })
+      .andWhere('blog.deleted_at IS NULL')
       .getRawMany();
   }
 }

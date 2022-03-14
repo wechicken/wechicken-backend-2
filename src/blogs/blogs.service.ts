@@ -67,7 +67,10 @@ export class BlogsService {
   }
 
   async updateBlog(blog_id: number, updateBlogInput: UpdateBlogInput) {
-    return this.blogRepository.updateBlog(blog_id, updateBlogInput);
+    return this.blogRepository.updateBlog(blog_id, {
+      ...updateBlogInput,
+      written_date: this.daysService.getISOString(updateBlogInput.written_date),
+    });
   }
 
   async deleteBlog(blog_id: number) {
