@@ -37,7 +37,11 @@ export class DaysService {
     return DAY_KOR_TO_ENG[dayjs(date).format('ddd')];
   }
 
-  getDateForm(date: string): string {
+  getISOString(date: string): string {
+    return dayjs(date).toISOString();
+  }
+
+  getDateForm(date: string | Date): string {
     return dayjs(date).format('YYYY-MM-DD');
   }
 

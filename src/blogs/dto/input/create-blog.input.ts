@@ -26,5 +26,5 @@ export class CreateBlogInput {
 
   @IsNotEmpty()
   @IsDateString()
-  written_date: Date;
+  written_date: string;
 }

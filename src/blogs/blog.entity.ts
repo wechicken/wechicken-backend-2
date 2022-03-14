@@ -30,8 +30,8 @@ export class Blog {
   @Column({ type: 'varchar', length: 2000, nullable: true })
   thumbnail: string;
 
-  @Column({ type: 'date' })
-  written_date: Date;
+  @Column({ type: 'datetime' })
+  written_datetime: Date;
 
   @CreateDateColumn()
   created_at: Date;
@@ -59,8 +59,9 @@ export class Blog {
   user_id: number;
 }
 
-export interface BlogResponse extends Omit<Blog, 'bookmarks' | 'likes'> {
+export interface BlogResponse
+  extends Omit<Blog, 'bookmarks' | 'likes' | 'written_datetime'> {
+  written_date: string;
   is_liked: boolean;
-
   is_bookmarked: boolean;
 }

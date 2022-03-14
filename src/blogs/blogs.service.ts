@@ -4,6 +4,7 @@ import { BlogRepository } from './blog.repository';
 import { BlogSearchInput } from './dto/input/blog-search.input';
 import { CreateBlogInput } from './dto/input/create-blog.input';
 import { UpdateBlogInput } from './dto/input/update-blog.input';
+import { DaysService } from '../days/days.service';
 import * as F from 'fxjs/Strict';
 
 export const FIND_BLOGS_BY_USER_INPUT = {
@@ -16,7 +17,10 @@ type FIND_BLOGS_BY_USER_INPUT =
 
 @Injectable()
 export class BlogsService {
-  constructor(private readonly blogRepository: BlogRepository) {}
+  constructor(
+    private readonly blogRepository: BlogRepository,
+    private readonly daysService: DaysService,
+  ) {}
 
   async findBlogs(
     blogSearchInput: BlogSearchInput,
@@ -56,7 +60,10 @@ export class BlogsService {
   }
 
   async createBlog(user_id: number, createBlogInput: CreateBlogInput) {
-    return this.blogRepository.createBlog(user_id, createBlogInput);
+    return this.blogRepository.createBlog(user_id, {
+      ...createBlogInput,
+      written_date: this.daysService.getISOString(createBlogInput.written_date),
+    });
   }
 
   async updateBlog(blog_id: number, updateBlogInput: UpdateBlogInput) {
@@ -113,8 +120,9 @@ export class BlogsService {
   }
 
   private buildBlogResponse(blogs: Blog[]): BlogResponse[] {
-    return blogs.map(({ likes, bookmarks, ...blog }) => ({
+    return blogs.map(({ written_datetime, likes, bookmarks, ...blog }) => ({
       ...blog,
+      written_date: this.daysService.getDateForm(written_datetime),
       is_liked: !!likes.length && likes[0].status,
       is_bookmarked: !!bookmarks.length && bookmarks[0].status,
     }));

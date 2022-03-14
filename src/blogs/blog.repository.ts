@@ -27,7 +27,11 @@ export class BlogRepository extends Repository<Blog> {
   ): Promise<Blog[]> {
     return this.createQueryBuilder('blog')
       .select([
-        'blog',
+        'blog.id',
+        'blog.title',
+        'blog.subtitle',
+        'blog.thumbnail',
+        'blog.written_datetime',
         'user.id',
         'user.name',
         'user.thumbnail',
@@ -49,14 +53,18 @@ export class BlogRepository extends Repository<Blog> {
       .andWhere('blog.deleted_at IS NULL')
       .skip(offset)
       .take(limit)
-      .orderBy('blog.written_date', 'DESC')
+      .orderBy('blog.written_datetime', 'DESC')
       .getMany();
   }
 
   findBlogsByUser(query, user_id: number): Promise<Blog[]> {
     return this.createQueryBuilder('blog')
       .select([
-        'blog',
+        'blog.id',
+        'blog.title',
+        'blog.subtitle',
+        'blog.thumbnail',
+        'blog.written_datetime',
         'user.id',
         'user.name',
         'user.thumbnail',
@@ -76,7 +84,7 @@ export class BlogRepository extends Repository<Blog> {
       .leftJoin('blog.likes', 'like', 'like.user_id = :user_id', { user_id })
       .where(query, { user_id })
       .andWhere('blog.deleted_at IS NULL')
-      .orderBy('blog.written_date', 'DESC')
+      .orderBy('blog.written_datetime', 'DESC')
       .getMany();
   }
 
@@ -99,7 +107,7 @@ export class BlogRepository extends Repository<Blog> {
         subtitle,
         link,
         thumbnail,
-        written_date,
+        written_datetime: written_date,
       })
       .execute();
   }
@@ -110,7 +118,7 @@ export class BlogRepository extends Repository<Blog> {
   ): Promise<UpdateResult> {
     return this.createQueryBuilder()
       .update(Blog)
-      .set({ title, subtitle, link, thumbnail, written_date })
+      .set({ title, subtitle, link, thumbnail, written_datetime: written_date })
       .where('id = :blog_id', { blog_id })
       .execute();
   }

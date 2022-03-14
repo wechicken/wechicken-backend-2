@@ -37,7 +37,7 @@ export class BatchRepository extends Repository<Batch> {
         batch_id,
       })
       .innerJoin('user.blogs', 'blog')
-      .where('blog.written_date BETWEEN :from AND :to', { from, to })
+      .where('blog.written_datetime BETWEEN :from AND :to', { from, to })
       .groupBy('user.id')
       .getRawMany();
   }
@@ -65,7 +65,7 @@ export class BatchRepository extends Repository<Batch> {
         'user.name',
         'blog.title',
         'blog.link',
-        'blog.written_date',
+        'blog.written_datetime AS blog_written_date',
         'blog_type.name',
       ])
       .innerJoin('batch.users', 'user', 'user.batch_id = :batch_id', {
@@ -73,7 +73,7 @@ export class BatchRepository extends Repository<Batch> {
       })
       .innerJoin('user.blogs', 'blog')
       .leftJoin('user.blogType', 'blog_type')
-      .where('blog.written_date BETWEEN :from AND :to', { from, to })
+      .where('blog.written_datetime BETWEEN :from AND :to', { from, to })
       .getRawMany();
   }
 }
