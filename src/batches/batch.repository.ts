@@ -64,10 +64,13 @@ export class BatchRepository extends Repository<Batch> {
         'batch.id',
         'user.id',
         'user.name',
+        'user.thumbnail',
+        'blog.id',
         'blog.title',
         'blog.link',
         'blog.written_datetime AS blog_written_date',
         'blog_type.name',
+        'blog_type.id',
       ])
       .innerJoin('batch.users', 'user', 'user.batch_id = :batch_id', {
         batch_id,
