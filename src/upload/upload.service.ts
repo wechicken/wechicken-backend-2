@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as AWS from 'aws-sdk';
-import * as multerS3 from 'multer-s3';
+import multerS3 from 'multer-s3';
 
 @Injectable()
 export class UploadService {
