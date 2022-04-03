@@ -48,10 +48,16 @@ export class UploadService {
 }
 
 export function fileInterceptor() {
+  const s3 = new AWS.S3();
+  s3.config.update({
+    accessKeyId: process.env.EXTERNAL_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.EXTERNAL_AWS_SECRET_ACCESS_KEY,
+  });
+  const bucket = process.env.EXTERNAL_AWS_S3_BUCKET_NAME;
   return FileInterceptor('file', {
     storage: multerS3({
-      s3: new AWS.S3(),
-      bucket: process.env.EXTERNAL_AWS_S3_BUCKET_NAME,
+      s3,
+      bucket,
       acl: 'public-read',
       key: (req, file, cb) => {
         cb(null, generateProfileFilePath(req.user.gmail, file.originalname));
