@@ -46,4 +46,7 @@ jobs:
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
           GOOGLE_AUTH_CLIENT_ID: ${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
           GOOGLE_AUTH_SECRET_KEY: ${{ secrets.GOOGLE_AUTH_SECRET_KEY }}
+          EXTERNAL_AWS_ACCESS_KEY_ID: ${{ secrets.EXTERNAL_AWS_ACCESS_KEY_ID }}
+          EXTERNAL_AWS_SECRET_ACCESS_KEY: ${{ secrets.EXTERNAL_AWS_SECRET_ACCESS_KEY }}
+          EXTERNAL_AWS_S3_BUCKET_NAME: ${{ secrets.EXTERNAL_AWS_S3_BUCKET_NAME }}
         run: npm run deploy

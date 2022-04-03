@@ -2,7 +2,7 @@ name: wechicken-production
 
 on:
   push:
-    branches: [ production ]
+    branches: [production]
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Add profile credentials to ~/.aws/credentials 
+      - name: Add profile credentials to ~/.aws/credentials
         run: |
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile wechicken
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile wechicken
@@ -46,4 +46,7 @@ jobs:
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
           GOOGLE_AUTH_CLIENT_ID: ${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
           GOOGLE_AUTH_SECRET_KEY: ${{ secrets.GOOGLE_AUTH_SECRET_KEY }}
+          EXTERNAL_AWS_ACCESS_KEY_ID: ${{ EXTERNAL_AWS_ACCESS_KEY_ID }}
+          EXTERNAL_AWS_SECRET_ACCESS_KEY: ${{ EXTERNAL_AWS_SECRET_ACCESS_KEY }}
+          EXTERNAL_AWS_S3_BUCKET_NAME: ${{ EXTERNAL_AWS_S3_BUCKET_NAME }}
         run: npm run deploy

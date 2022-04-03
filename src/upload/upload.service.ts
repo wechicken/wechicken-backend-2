@@ -7,8 +7,8 @@ export class UploadService {
 
   constructor() {
     AWS.config.update({
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: process.env.EXTERNAL_AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.EXTERNAL_AWS_SECRET_ACCESS_KEY,
     });
     this.s3 = new AWS.S3();
   }
@@ -25,7 +25,7 @@ export class UploadService {
     try {
       await this.s3
         .upload({
-          Bucket: process.env.AWS_S3_BUCKET_NAME,
+          Bucket: process.env.EXTERNAL_AWS_S3_BUCKET_NAME,
           ACL: 'public-read',
           Key: this.generateProfileFilePath(email, originalname),
           Body: file.buffer,
