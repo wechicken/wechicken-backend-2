@@ -48,6 +48,7 @@
     "fxjs": "^0.21.3",
     "google-auth-library": "^7.14.0",
     "multer": "^1.4.2",
+    "multer-s3": "^2.10.0",
     "mysql2": "^2.2.5",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",

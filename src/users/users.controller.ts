@@ -19,7 +19,7 @@ import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ValidUser } from '../auth/decorator/ValidUser';
 import { User } from './user.entity';
-import { UploadService } from '../upload/upload.service';
+import { fileInterceptor, UploadService } from '../upload/upload.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BlogsService } from '../blogs/blogs.service';
 import { PagingInput } from '../blogs/dto/input/blog-search.input';
@@ -135,7 +135,7 @@ export class UsersController {
 
   @Patch('thumbnail')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(fileInterceptor())
   async update(
     @ValidUser() { id: userId, gmail }: User,
     @UploadedFile() file?: Express.Multer.File,
